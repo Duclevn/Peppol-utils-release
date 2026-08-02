@@ -1,8 +1,8 @@
-# Facturx-utils 0.4.0 End-User Guide
+# Peppol-utils 0.6.0 End-User Guide
 
 ## Table Of Contents
 
-- [What's New In 0.4.0](#whats-new-in-040)
+- [What's New In 0.6.0](#whats-new-in-060)
 
 **Getting started**
 
@@ -17,6 +17,7 @@
 6. [View A PDF Invoice](#6-view-a-pdf-invoice)
 7. [Edit XML](#7-edit-xml)
 8. [Check Peppol Participant Information](#8-check-peppol-participant-information)
+- [Use The Knowledge Base](#use-the-knowledge-base)
 9. [Validate The Invoice](#9-validate-the-invoice)
 10. [Visualize Edited XML](#10-visualize-edited-xml)
 11. [Convert Between UBL And CII](#11-convert-between-ubl-and-cii)
@@ -28,10 +29,13 @@
 14. [Troubleshooting](#14-troubleshooting)
 15. [Safe Use Recommendation](#15-safe-use-recommendation)
 
-## What's New In 0.4.0
+## What's New In 0.6.0
 
-This guide applies to the [facturx-utils-0.4.0.jar](https://github.com/Duclevn/facturx-utils-release/releases/download/v0.4.0/facturx-utils-0.4.0.jar) desktop app.
+This guide applies to the `peppol-utils-0.6.0.jar` desktop app. Knowledge Base retrieval uses local BM25 and reviewed multilingual terminology, selects authoritative passages, and limits provider context to focused evidence. Existing invoice workflows and the reusable core API remain compatible.
 
+- Search a signed, versioned e-invoicing documentation bundle locally from `Utilities` > `AI Wiki`.
+- Ask questions through local Ollama or optional Gemini and OpenAI providers, and inspect application-generated source cards.
+- Continue using local source search when the selected provider is unavailable; questions with insufficient evidence are not sent to any provider.
 - Convert UBL Invoice/CreditNote to CII and CII/Factur-X XML to UBL from `Conversion`.
 - Generate Base or Full France CTC Flow 1 XML while retaining CII or UBL syntax.
 - Check Peppol participant publication and exact invoice-type support separately in Production and Test.
@@ -40,32 +44,25 @@ This guide applies to the [facturx-utils-0.4.0.jar](https://github.com/Duclevn/f
 
 ## 1. What You Receive
 
-The workbench is delivered as one runnable jar. That file contains the app plus the libraries it needs for PDF rendering, Factur-X extraction, XML editing, validation rules, UBL/CII conversion in both directions, and JavaFX desktop controls.
-Because those libraries are bundled, the jar can be around 70-80 MB. This is normal for the full offline workbench. Users do not need Maven or the source code; they only need Java 21 or newer and the correct jar for their operating system and CPU architecture.
+The universal JAR contains the app plus the libraries it needs for PDF rendering, Factur-X extraction, XML editing, validation rules, UBL/CII conversion in both directions, and JavaFX controls. It supports Windows x64, Linux x64/ARM64, and macOS Intel/Apple Silicon. A self-contained Windows installer may also be supplied; it includes its own Java runtime.
 
-<img width="2564" height="1700" alt="image" src="https://github.com/user-attachments/assets/eb14b6c5-5413-43e4-bb13-698684d53d97" />
-
+Users do not need Maven or the source code.
 
 ## 2. Install Java
 
-Facturx-utils requires Java 21 or newer.
+When using the JAR, Peppol-utils requires Java 21. The optional Windows installer already includes the required runtime.
 
-For most users, install the Oracle JDK. The JDK includes the Java runtime needed to run the app.
-
-Java and JavaFX are related, but they are not the same thing. Since Java 11, JavaFX is no longer included in the standard JDK. This app's runnable jar is expected to include JavaFX, but JavaFX uses native files that must match the user's operating system and CPU architecture.
+Install a Java 21 runtime or JDK from a vendor you trust. JavaFX is bundled with the application; the universal JAR selects the matching native files for its supported operating system and CPU architecture.
 
 Recommended download page:
-
 - Oracle Java downloads: https://www.oracle.com/java/technologies/downloads/
 
 ## 3. Start The App
 
 Put the jar in a folder you can find, for example `Downloads` or `Documents`.
-
 Open PowerShell in that folder and run:
-
 ```powershell
-java -jar .\facturx-utils-0.4.0.jar
+java -jar .\peppol-utils-0.6.0.jar
 ```
 
 ## 4. Open An Invoice
@@ -145,11 +142,15 @@ To check publication status:
 4. Review the separate `Production` and `Test` results.
 5. Review the invoice-type badge in each Production and Test row, then expand a result to inspect the discovery details. These can include the SML DNS zone, SMP URL, a single active Billing Invoice access-point URL, published document types, and optional Business Card company names, country, and registration date when the SMP provides them. Click `Refresh` to bypass the short-lived cache and run the checks again.
 
-Production and Test have independent badges: `✔ Invoice type supported`, `⚠ Invoice type not supported`, or `❔ Invoice type unknown`. The comparison uses the invoice's exact Peppol document type identifier (syntax, Invoice/CreditNote type, customization/profile, and syntax version) against the document types published in that environment. Test support does not imply Production support.
+Production and Test have independent badges: `✔ Invoice type supported`, `⚠ Invoice type not supported`, or `❔ Invoice type unknown`. The comparison uses the invoice's exact Peppol document type identifier against the document types published in that environment. For a Factur-X EN 16931 PDF, it compares the French `pdf+xml` Factur-X transport type, not the embedded CII XML type. For standalone XML, it compares the XML syntax, Invoice/CreditNote type, customization/profile, and syntax version. Test support does not imply Production support.
+
+![Peppol participant information showing separate Production and Test results, discovery details, Business Card data, and published document types.](docs/images/peppol-participant-information.png)
+
+*Peppol participant information in the Summary tab. Production and Test are reported independently; this example shows a participant registered in Test but not in Production, with the invoice type unsupported in both environments.*
 
 Registration and invoice-type support are separate results. A participant can be registered while not publishing the exact document type required by the open invoice. Possible registration results are registered, not registered, and lookup failed. A missing address, missing or invalid `schemeID`, email address, or non-registrable scheme is explained without sending a lookup.
 
-Peppol lookup is the only area that requires internet access. It queries Peppol SML/SMP discovery services only when you explicitly run a lookup; opening and validating an invoice do not automatically contact the network. A result describes discovery metadata at the time of the check and is not a guarantee that a future document transmission will succeed.
+Peppol lookup requires internet access. It queries Peppol SML/SMP discovery services only when you explicitly run a lookup; opening and validating an invoice do not automatically contact the network. Knowledge Base has a separate, explicit network flow described below. A Peppol result describes discovery metadata at the time of the check and is not a guarantee that a future document transmission will succeed.
 
 ### Look up any Peppol participant
 
@@ -162,8 +163,41 @@ Use `Utilities` > `Peppol lookup` in the left sidebar when the participant is no
 
 The identifier is checked locally before any request is sent. Each lookup is user initiated, Production and Test stay independent, and a network failure remains distinct from a participant that is not registered.
 
+## Use The AI Wiki
+
+Open `Utilities` > `AI Wiki`. The feature is disabled by default and performs no bundle download, update check, or provider request until you opt in.
+
+On first use:
+
+1. Read the disclosure.
+2. Select the acknowledgement.
+3. Click `Enable and download`.
+4. Wait while the signed manifest, checksum, archive paths, schemas, and local search index are verified.
+
+The app activates a new bundle only after a complete staged validation. A failed or untrusted update does not replace the last-known-good bundle. An authenticated revocation immediately removes the affected bundle from use and activates the newest healthy, non-revoked rollback when one is available.
+
+The main area is the AI Wiki chat. The conversation and composer share a centered reading column so long answers remain readable on wide displays. Click `Settings` to update the bundle and choose Ollama local, Gemini, or OpenAI.
+
+You can search locally even when the selected provider is unavailable. Questions in English, French, or Vietnamese use the signed bundle's BM25 index and a curated e-invoicing terminology catalog. When a configured provider is available, it may prepare bounded English, French, and keyword search variants before local retrieval. Follow-up retrieval uses the preceding user question to resolve the referenced standard or concept while the current question remains the one answered. For a question that asks for a list, count, or document-wide explanation, the app chooses the most relevant current source and supplies contiguous source pages rather than disconnected snippets. If no result meets the relevance threshold, the app reports insufficient evidence and does not request an answer from the provider.
+
+For a synthesized answer:
+
+1. For private local generation, start Ollama and install a chat model. For cloud generation, obtain your own Gemini or OpenAI API key.
+2. Open `Settings` and choose a provider. Ollama connects only to `http://127.0.0.1:11434/api/`; cloud providers use their official HTTPS APIs.
+3. For Ollama, select an installed model. For a cloud provider, enter the exact model name, then save the settings and API key or provide the corresponding environment variable. Each cloud provider remembers its own model; `Use default` restores the bundled default name.
+4. Optionally click `Test connection`; the settings dialog confirms the connection or shows a visible error.
+5. Type a question and press Enter or click `Send`. Press Shift+Enter to insert a new line. An animated `Assistant is thinking...` indicator remains visible until the first response text arrives.
+6. Read the formatted Markdown answer, then click its source action to open the contextual source rail on the right. Sources explicitly cited as `[S1]`, `[S2]`, and so on are grouped by document with consolidated page and marker lists; repository paths and exact commits remain under `Source details`. If the provider returned no valid citation marker, the fallback source action is labeled `Retrieved sources supplied to Assistant`; local-search-only results use `Retrieved sources`.
+
+Hover over a message to reveal its small copy icon inside the upper-right corner. `Chats` opens a session-history dialog; `New chat` keeps the current conversation available while starting a clean one. This lightweight chat history lasts for the current app session and is not written to disk.
+
+The selected provider and cloud model names are remembered. Cloud API keys may be supplied through environment variables or saved in `~/.peppol-utils/knowledgebase.json`; the file is written atomically with owner-only POSIX permissions where supported, but its contents are not encrypted. Prefer environment variables or an operating-system credential workflow on managed devices.
+
+The provider receives the question, at most six recent turns, and selected source excerpts. The app does not attach an invoice or send invoice XML/PDF content. `Stop` cancels an active response, and normal invoice features remain available if GitHub or the provider is offline.
+
+AI output is explanatory, not authoritative validation, legal advice, or tax advice. Follow the immutable source link and check the cited version when accuracy matters.
+
 ## 9. Validate The Invoice
-<img width="2564" height="1700" alt="image" src="https://github.com/user-attachments/assets/f7dfdd87-cb66-4188-84cb-06ed4c794c88" />
 
 Choose a validation profile in the left sidebar:
 
@@ -187,6 +221,10 @@ The table shows actionable errors and warnings, while passed checks and profile-
 - Element/context, XPath test, source, and artefact in the detail panel
 
 If there are no validation issues, the table reports an OK result. The validation table labels detected schema/profile findings as `PHIVE`, France CTC 1.3.1 findings as `FR CTC old`, and findings from the latest bundled France CTC version as `FR CTC`. Both France CTC versions run when 1.3.1 is available in Helger phive; if a future dependency release removes it, only the latest set runs. Warnings remain non-blocking; validator execution failures and error/fatal assertions block strict saving.
+
+![France CTC validation results showing an error and warning for the same rule in the current and legacy rule sets.](docs/images/france-ctc-validation-results.png)
+
+*France CTC validation result. Select a row to see the rule ID, description, element/context, and technical details in the panel on the right. The same assertion can appear once for the current France CTC rules and once for the legacy `FR CTC old` rules.*
 
 If the XML editor contains unsaved changes, validation checks the edited XML because those bytes are not yet embedded in the saved PDF. Save and reopen the PDF to validate the updated hybrid container and XMP metadata.
 
@@ -267,6 +305,14 @@ Important:
 
 After saving, the app reopens the saved file and shows the validation result.
 
+### Repair an invalid Factur-X PDF container
+
+When a PDF's embedded invoice XML is valid but its Factur-X XMP, PDF/A-3 metadata, checksum, output intent, or embedded-file metadata is invalid, open the `Validation` tab and click `Repair PDF container...`.
+
+The repair action preserves the saved embedded XML, re-exports the hybrid container through Mustangproject, and validates the staged result before writing it. It always creates a separate `-repaired.pdf` copy by default; the original invoice is not overwritten. Save or discard any XML editor changes before starting repair.
+
+Repair can rebuild hybrid metadata and attachment structures. It does not promise to correct arbitrary damaged page content, encryption, signatures, malformed PDFs, or every possible PDF/A violation. If the repaired copy does not pass validation, the app does not replace the selected destination.
+
 ## 14. Troubleshooting
 
 ### `java` is not recognized
@@ -275,7 +321,7 @@ Java is not installed or the terminal was opened before Java was installed.
 
 Fix:
 
-1. Install Java 21 or newer.
+1. Install Java 21.
 2. Close PowerShell or Command Prompt.
 3. Open a new PowerShell or Command Prompt window.
 4. Run:
@@ -289,12 +335,12 @@ java -version
 Run it from PowerShell so you can see the error:
 
 ```powershell
-java -jar .\facturx-utils-0.4.0.jar
+java -jar .\peppol-utils-0.6.0.jar
 ```
 
 Check that:
 
-- Java version is `21` or newer.
+- Java version is `21`.
 - The jar file was fully downloaded.
 - The jar was built for your operating system and CPU architecture.
 
@@ -323,6 +369,10 @@ Check that the file is one of:
 - `.xml` using CII or UBL syntax
 
 For PDF files, the PDF must contain embedded Factur-X XML.
+
+### The app will not close while it is processing
+
+Choose `Exit and cancel` in the confirmation dialog. This stops the active operation and closes the app; any unsaved edits remain unsaved.
 
 ### Save fails
 
