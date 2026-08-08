@@ -1,8 +1,8 @@
-# Peppol-utils 0.6.0 End-User Guide
+# Peppol-utils 0.7.0 End-User Guide
 
 ## Table Of Contents
 
-- [What's New In 0.6.0](#whats-new-in-060)
+- [What's New In 0.7.0](#whats-new-in-070)
 
 **Getting started**
 
@@ -29,15 +29,16 @@
 14. [Troubleshooting](#14-troubleshooting)
 15. [Safe Use Recommendation](#15-safe-use-recommendation)
 
-## What's New In 0.6.0
+## What's New In 0.7.0
 
-This guide applies to the `peppol-utils-0.6.0.jar` desktop app. Knowledge Base retrieval uses local BM25 and reviewed multilingual terminology, selects authoritative passages, and limits provider context to focused evidence. Existing invoice workflows and the reusable core API remain compatible.
+This guide applies to the `peppol-utils-0.7.0.jar` desktop app. Knowledge Base retrieval uses local BM25 and reviewed multilingual terminology, selects authoritative passages, and limits provider context to focused evidence. Existing invoice workflows and the reusable core API remain compatible.
 
 - Search a signed, versioned e-invoicing documentation bundle locally from `Utilities` > `AI Wiki`.
 - Ask questions through local Ollama or optional Gemini and OpenAI providers, and inspect application-generated source cards.
 - Continue using local source search when the selected provider is unavailable; questions with insufficient evidence are not sent to any provider.
 - Convert UBL Invoice/CreditNote to CII and CII/Factur-X XML to UBL from `Conversion`.
 - Generate Base or Full France CTC Flow 1 XML while retaining CII or UBL syntax.
+- Validate Flux 1 and Flux 10 with the Helger phive rules selected from the Flux 1 BT-24/CustomizationID trajectory or the Flux 10 `<Report>` root.
 - Check Peppol participant publication and exact invoice-type support separately in Production and Test.
 - Use the dedicated two-layer France CTC validation route for Flux 2/CDAR documents.
 - Review, edit, and save converted or generated XML in separate tabs without overwriting the source invoice.
@@ -62,7 +63,7 @@ Recommended download page:
 Put the jar in a folder you can find, for example `Downloads` or `Documents`.
 Open PowerShell in that folder and run:
 ```powershell
-java -jar .\peppol-utils-0.6.0.jar
+java -jar .\peppol-utils-0.7.0.jar
 ```
 
 ## 4. Open An Invoice
@@ -140,11 +141,11 @@ To check publication status:
 2. Review the detected seller and buyer electronic addresses and schemes.
 3. Click `Check Participant Information`.
 4. Review the separate `Production` and `Test` results.
-5. Review the invoice-type badge in each Production and Test row, then expand a result to inspect the discovery details. These can include the SML DNS zone, SMP URL, a single active Billing Invoice access-point URL, published document types, and optional Business Card company names, country, and registration date when the SMP provides them. Click `Refresh` to bypass the short-lived cache and run the checks again.
+5. Review the invoice-type badge in each Production and Test row, then expand a result to inspect the discovery details. These can include the SML DNS zone, SMP URL, a single active Billing Invoice access point, Document Type details, and optional Business Card company names, country, and registration date when the SMP provides them. Document Type details are collapsed by default; expand one to see its blue bold name, scheme and identifier/value, plus each matching process row. The collapsed `SMP` header shows the SMP URL; expand it to inspect the signing certificate details embedded in validated SMP XML signatures (subject, issuer, serial, validity, key, and certificate signature algorithm) when available. This is distinct from both the SMP server TLS certificate and the AP endpoint certificate. The collapsed `Access Point` header shows the selected endpoint URL; expand it under `SMP & AP` to inspect the transport, URL, service, contact, certificate, activation, expiry, and status metadata once for the lookup result when the SMP supplies it. The certificate fields describe the AP endpoint certificate published in SMP service metadata; the SMP server TLS certificate is not captured. Click `Refresh` to bypass the short-lived cache and run the checks again.
 
 Production and Test have independent badges: `✔ Invoice type supported`, `⚠ Invoice type not supported`, or `❔ Invoice type unknown`. The comparison uses the invoice's exact Peppol document type identifier against the document types published in that environment. For a Factur-X EN 16931 PDF, it compares the French `pdf+xml` Factur-X transport type, not the embedded CII XML type. For standalone XML, it compares the XML syntax, Invoice/CreditNote type, customization/profile, and syntax version. Test support does not imply Production support.
 
-![Peppol participant information showing separate Production and Test results, discovery details, Business Card data, and published document types.](docs/images/peppol-participant-information.png)
+![Peppol participant information showing separate Production and Test results, discovery details, Business Card data, Document Type details, and collapsed SMP signing-certificate and Access Point panels.](docs/images/peppol-participant-information.png)
 
 *Peppol participant information in the Summary tab. Production and Test are reported independently; this example shows a participant registered in Test but not in Production, with the invoice type unsupported in both environments.*
 
@@ -159,7 +160,7 @@ Use `Utilities` > `Peppol lookup` in the left sidebar when the participant is no
 1. Enter an identifier such as `0225:152857363`. The full `iso6523-actorid-upis::0225:152857363` form is also accepted.
 2. Click `Look up participant` or press Enter.
 3. Review the separate Production and Test results below the search box.
-4. Expand the environment details to inspect its SML/SMP source, published document types, available Billing Invoice access-point URL, and optional Business Card.
+4. Expand the environment details to inspect its SML/SMP source, the collapsed SMP panel with signing certificate details from validated XML signatures, Document Type details, the collapsed Access Point panel with the selected Billing Invoice endpoint URL and metadata, and optional Business Card. SMP signing certificates, AP endpoint certificates, and the SMP server TLS certificate are distinct; the TLS peer certificate is not captured.
 
 The identifier is checked locally before any request is sent. Each lookup is user initiated, Production and Test stay independent, and a network failure remains distinct from a participant that is not registered.
 
@@ -202,7 +203,7 @@ AI output is explanatory, not authoritative validation, legal advice, or tax adv
 Choose a validation profile in the left sidebar:
 
 - `Default`: general Factur-X / EN 16931 validation.
-- `France CTC`: first validates the exact detected invoice schema/profile VESID, then runs the legacy 1.3.1 and latest bundled France CTC rule sets for CII/UBL EN 16931, CII/UBL Extended, UBL CreditNote, Factur-X, or CDAR. The legacy set is skipped if it is not bundled.
+- `France CTC`: Flux 1 and Flux 10 use the Helger phive rule sets automatically. Flux 1 CII/UBL selects the Base/Démarrage or Full/Cible VESID from BT-24/CustomizationID, while the namespace-less Flux 10 `<Report>` selects `fr.ctc.flux10:report:1.0`. Other documents first validate the exact detected invoice schema/profile VESID, then run the legacy 1.3.1 and latest bundled France CTC rule sets for CII/UBL EN 16931, CII/UBL Extended, UBL CreditNote, Factur-X, or CDAR. The legacy set is skipped if it is not bundled.
 
 Click `Validate`.
 
@@ -221,6 +222,8 @@ The table shows actionable errors and warnings, while passed checks and profile-
 - Element/context, XPath test, source, and artefact in the detail panel
 
 If there are no validation issues, the table reports an OK result. The validation table labels detected schema/profile findings as `PHIVE`, France CTC 1.3.1 findings as `FR CTC old`, and findings from the latest bundled France CTC version as `FR CTC`. Both France CTC versions run when 1.3.1 is available in Helger phive; if a future dependency release removes it, only the latest set runs. Warnings remain non-blocking; validator execution failures and error/fatal assertions block strict saving.
+
+Flux 1 trajectory selection uses `urn.cpro.gouv.fr:1p0:einvoicingextract#Base` for Démarrage and `...#Full` for Cible. The service reports the corresponding `fr.ctc.flux1:*:0.2` VESID in the ordinary PHIVE validation set. Generated Flow 1 output still applies the field catalog and temporary operational mapping before running the same phive-backed completeness check.
 
 ![France CTC validation results showing an error and warning for the same rule in the current and legacy rule sets.](docs/images/france-ctc-validation-results.png)
 
@@ -285,7 +288,7 @@ Open any supported CII or UBL invoice, then select `Conversion` and click `FR CT
 4. Use `Format XML` or edit the XML if needed.
 5. Click `Save as...` and choose an output location.
 
-The generator keeps the source syntax: CII input produces CII F1 XML, while UBL invoice or credit-note input produces UBL F1 XML. It follows the XP Z12-012 v1.4 field subset and mapping rules. Ordinary invoices open one generated tab. B8/S8/M8 multi-seller invoices open one tab per unit-invoice number, and B9/S9/M9 bidirectional invoices open the two required directions.
+The generator keeps the source syntax: CII input produces CII F1 XML, while UBL invoice or credit-note input produces UBL F1 XML. It follows the XP Z12-012 v1.4 field subset and the bundled mapping resources. Ordinary invoices open one generated tab. B8/S8/M8 multi-seller invoices open one tab per unit-invoice number, and B9/S9/M9 bidirectional invoices open the two required directions. The generated result is validated by the matching dependency-supplied phive VESID selected from its BT-24/CustomizationID trajectory; review any reported required-field findings before saving. The app does not claim a separate bundled AIFE Schematron validation route.
 
 The source invoice is not overwritten. The suggested filename is prefixed with the profile; split outputs also include the unit-invoice identifier.
 
@@ -335,7 +338,7 @@ java -version
 Run it from PowerShell so you can see the error:
 
 ```powershell
-java -jar .\peppol-utils-0.6.0.jar
+java -jar .\peppol-utils-0.7.0.jar
 ```
 
 Check that:
