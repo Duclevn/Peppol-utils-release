@@ -1,8 +1,8 @@
-# Peppol-utils 0.7.0 End-User Guide
+# Peppol-utils 0.8.0 End-User Guide
 
 ## Table Of Contents
 
-- [What's New In 0.7.0](#whats-new-in-070)
+- [What's New In 0.8.0](#whats-new-in-080)
 
 **Getting started**
 
@@ -29,9 +29,15 @@
 14. [Troubleshooting](#14-troubleshooting)
 15. [Safe Use Recommendation](#15-safe-use-recommendation)
 
-## What's New In 0.7.0
+## What's New In 0.8.0
 
-This guide applies to the `peppol-utils-0.7.0.jar` desktop app. Knowledge Base retrieval uses local BM25 and reviewed multilingual terminology, selects authoritative passages, and limits provider context to focused evidence. Existing invoice workflows and the reusable core API remain compatible.
+This guide applies to the `peppol-utils-0.8.0.jar` desktop app. Version 0.8.0 reduces startup and working memory, renders PDF pages to the visible viewport instead of oversized images, and releases AI Wiki indexes and providers when the feature is disabled. Validation, conversion, France CTC F1 generation, and XML-to-PDF visualization use short-lived local worker processes so heavyweight engines do not remain in the desktop process after the task completes. The workers use only local files and do not change the app's privacy model. Existing invoice workflows and the reusable core API remain compatible.
+
+- Start in a centered, right-sized window instead of allocating a maximized graphics surface immediately.
+- Preview PDFs with a bounded viewport-aware renderer designed for integrated GPUs and low-memory computers.
+- Load invoice validation, visualization, AI providers, and Knowledge Base data only when their workflows need them.
+- Disable AI Wiki from its settings to release its local index, provider clients, conversations, and rendered messages.
+- Edit large XML documents without applying expensive whole-document syntax highlighting above the safe interactive limit.
 
 - Search a signed, versioned e-invoicing documentation bundle locally from `Utilities` > `AI Wiki`.
 - Ask questions through local Ollama or optional Gemini and OpenAI providers, and inspect application-generated source cards.
@@ -45,13 +51,13 @@ This guide applies to the `peppol-utils-0.7.0.jar` desktop app. Knowledge Base r
 
 ## 1. What You Receive
 
-The universal JAR contains the app plus the libraries it needs for PDF rendering, Factur-X extraction, XML editing, validation rules, UBL/CII conversion in both directions, and JavaFX controls. It supports Windows x64, Linux x64/ARM64, and macOS Intel/Apple Silicon. A self-contained Windows installer may also be supplied; it includes its own Java runtime.
+The universal JAR contains the app plus the libraries it needs for PDF rendering, Factur-X extraction, XML editing, validation rules, UBL/CII conversion in both directions, and JavaFX controls. It supports Windows x64, Linux x64/ARM64, and macOS Intel/Apple Silicon. A self-contained Windows installer may also be supplied; it installs the launcher, JavaFX/native libraries, resources, and its own private Java runtime.
 
 Users do not need Maven or the source code.
 
 ## 2. Install Java
 
-When using the JAR, Peppol-utils requires Java 21. The optional Windows installer already includes the required runtime.
+When using the JAR, Peppol-utils requires Java 21. The Windows installer already includes the required runtime, so Windows users do not need a separate Java, JRE, or JDK installation for that package.
 
 Install a Java 21 runtime or JDK from a vendor you trust. JavaFX is bundled with the application; the universal JAR selects the matching native files for its supported operating system and CPU architecture.
 
@@ -60,10 +66,14 @@ Recommended download page:
 
 ## 3. Start The App
 
-Put the jar in a folder you can find, for example `Downloads` or `Documents`.
-Open PowerShell in that folder and run:
+For the self-contained Windows package, download and run
+`Peppol-utils-<version>-windows-x64-setup.exe`. Complete the installer, then
+launch Peppol-utils from the Start menu or the optional desktop shortcut.
+
+For the universal JAR, put the jar in a folder you can find, for example
+`Downloads` or `Documents`. Open PowerShell in that folder and run:
 ```powershell
-java -jar .\peppol-utils-0.7.0.jar
+java -jar .\peppol-utils-0.8.0.jar
 ```
 
 ## 4. Open An Invoice
@@ -143,7 +153,9 @@ To check publication status:
 4. Review the separate `Production` and `Test` results.
 5. Review the invoice-type badge in each Production and Test row, then expand a result to inspect the discovery details. These can include the SML DNS zone, SMP URL, a single active Billing Invoice access point, Document Type details, and optional Business Card company names, country, and registration date when the SMP provides them. Document Type details are collapsed by default; expand one to see its blue bold name, scheme and identifier/value, plus each matching process row. The collapsed `SMP` header shows the SMP URL; expand it to inspect the signing certificate details embedded in validated SMP XML signatures (subject, issuer, serial, validity, key, and certificate signature algorithm) when available. This is distinct from both the SMP server TLS certificate and the AP endpoint certificate. The collapsed `Access Point` header shows the selected endpoint URL; expand it under `SMP & AP` to inspect the transport, URL, service, contact, certificate, activation, expiry, and status metadata once for the lookup result when the SMP supplies it. The certificate fields describe the AP endpoint certificate published in SMP service metadata; the SMP server TLS certificate is not captured. Click `Refresh` to bypass the short-lived cache and run the checks again.
 
-Production and Test have independent badges: `✔ Invoice type supported`, `⚠ Invoice type not supported`, or `❔ Invoice type unknown`. The comparison uses the invoice's exact Peppol document type identifier against the document types published in that environment. For a Factur-X EN 16931 PDF, it compares the French `pdf+xml` Factur-X transport type, not the embedded CII XML type. For standalone XML, it compares the XML syntax, Invoice/CreditNote type, customization/profile, and syntax version. Test support does not imply Production support.
+Production and Test are checked independently. The Peppol overview reports two separate conclusions: document-type publication (`published by SMP`, `not published by SMP`, or `publication unknown`) and advertised process/endpoint metadata (`active AS4 v2 endpoint metadata available`, `active endpoint metadata available; choose a process`, `no matching active endpoint metadata`, or `process/endpoint unresolved`). Document publication uses the exact Peppol document type identifier first (case-sensitive scheme and value), then the standard Peppol Wildcard Scheme. An exact same-scheme/value registration takes precedence; otherwise the selector chooses the wildcard with the greatest number of matching CustomizationID parts. A published document type is not by itself proof that a requested process can be delivered; an active metadata row is not an AS4 reachability test.
+
+For a recognized Factur-X hybrid PDF with explicit France CTC buyer routing (`schemeID=0225`), the comparison uses the French `pdf+xml` Factur-X transport type, not the embedded CII XML type. The embedded XML remains the source for invoice data and validation. A recognized Factur-X PDF without that routing context remains unresolved; the embedded CII type is never used as a fallback. Standalone XML carries its raw DDD BT-23/ProfileID process into the comparison, and a value that is not an exact member of the matched DTI's allowed process set is rejected. A Factur-X PDF's embedded BusinessProcess value is not treated as its Peppol transport process, so only that PDF case leaves process selection unresolved and exposes the allowed active processes advertised for the matched PDF registration instead. Test support does not imply Production support.
 
 ![Peppol participant information showing separate Production and Test results, discovery details, Business Card data, Document Type details, and collapsed SMP signing-certificate and Access Point panels.](docs/images/peppol-participant-information.png)
 
@@ -304,7 +316,8 @@ Important:
 - Make your own copy of the invoice before editing if you need to keep the original.
 - For standalone XML files, the app validates the edited XML before overwriting the XML file.
 - For PDF files, the app validates the edited XML, re-embeds it into the PDF, validates the rewritten PDF, and then replaces the original PDF.
-- If validation finds fatal errors, the app shows those errors and asks whether you want to save the invalid XML anyway. Choose this only when you intentionally need an invalid file for testing.
+- If validation finds blocking `ERROR` or `FATAL` findings, the app shows those errors and asks whether you want to save the invalid XML anyway. Choose this only when you intentionally need an invalid file for testing.
+- If a normal save—or a save after you choose `Save anyway` for XML business-rule findings—fails because a preserved PDF digital signature makes the rewritten PDF/A container invalid, the app offers an explicit unsigned test-copy recovery. The suggested output is `<stem>-invalid.pdf`; it removes the PDF signature fields/widgets and signature permissions only from that new copy, never from or over the original signed invoice. The recovery still requires well-formed, XML-schema-valid XML and a valid Factur-X/PDF-A container; only the already-confirmed business-rule (Schematron) bypass is retained.
 
 After saving, the app reopens the saved file and shows the validation result.
 
@@ -338,7 +351,7 @@ java -version
 Run it from PowerShell so you can see the error:
 
 ```powershell
-java -jar .\peppol-utils-0.7.0.jar
+java -jar .\peppol-utils-0.8.0.jar
 ```
 
 Check that:
@@ -357,10 +370,14 @@ Check the Mac architecture:
 uname -m
 ```
 
-Then use the matching app jar and Java build:
+The released universal JAR contains both macOS native payloads. Keep using that
+same JAR, and install a Java 21 runtime whose architecture matches the Mac:
 
-- `arm64`: Apple Silicon / M-series Mac, including M1, M2, M3, M4, and M5. Use the macOS Apple Silicon / AArch64 jar and JDK.
-- `x86_64`: Intel Mac. Use the macOS Intel / x64 jar and JDK.
+- `arm64`: Apple Silicon / M-series Mac, including M1, M2, M3, M4, and M5. Use an arm64 Java 21 runtime.
+- `x86_64`: Intel Mac. Use an x64 Java 21 runtime.
+
+Platform-specific JavaFX JARs may exist in developer builds, but are not part of
+the universal release distribution.
 
 Installing a JDK distribution that includes JavaFX can work around some JavaFX startup problems, but it is not a universal fix. The JavaFX runtime still needs to match the Mac architecture.
 
@@ -386,6 +403,8 @@ Saving can fail when:
 - The PDF cannot be rewritten safely.
 - The file is open in another app.
 - The folder is read-only.
+
+For a signed Factur-X PDF, the normal save attempt always runs first. If edited XML has blocking business-rule findings, the app still asks whether to choose `Save anyway`. If either save path then fails specifically because the preserved signature invalidates the staged PDF, choose the offered unsigned test copy and a separate `<stem>-invalid.pdf` destination. This is a diagnostic file with no valid signature; sign the final production PDF again. Cancelling the prompt leaves the source unchanged. Unrelated PDF, container, syntax, and schema failures keep the normal `Save failed` behavior.
 
 Fix the reported issue, close other apps that may be using the invoice, and try again.
 
