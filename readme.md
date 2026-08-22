@@ -1,8 +1,8 @@
-# Peppol-utils 0.8.0 End-User Guide
+# Peppol-utils 1.0.0 End-User Guide
 
 ## Table Of Contents
 
-- [What's New In 0.8.0](#whats-new-in-080)
+- [What's New In 1.0.0](#whats-new-in-100)
 
 **Getting started**
 
@@ -29,9 +29,14 @@
 14. [Troubleshooting](#14-troubleshooting)
 15. [Safe Use Recommendation](#15-safe-use-recommendation)
 
-## What's New In 0.8.0
+## What's New In 1.0.0
 
-This guide applies to the `peppol-utils-0.8.0.jar` desktop app. Version 0.8.0 reduces startup and working memory, renders PDF pages to the visible viewport instead of oversized images, and releases AI Wiki indexes and providers when the feature is disabled. Validation, conversion, France CTC F1 generation, and XML-to-PDF visualization use short-lived local worker processes so heavyweight engines do not remain in the desktop process after the task completes. The workers use only local files and do not change the app's privacy model. Existing invoice workflows and the reusable core API remain compatible.
+This guide applies to the `peppol-utils-1.0.0.jar` desktop app. Version 1.0.0 internally decomposes the large `FacturxService` implementation into focused components while preserving the public `FacturxService` facade, reusable `com.facturxutils` API, invoice workflows, validation semantics, and save guarantees. It retains the low-resource improvements delivered through 0.9.0: bounded startup and working memory, viewport-sized PDF rendering, AI Wiki resource unloading, and short-lived workers for validation, conversion, France CTC Flow 1 generation, and XML-to-PDF visualization.
+
+- Continue using the same supported invoice workflows and API-compatible integrations after the internal service decomposition.
+- Choose `Save anyway` for a Factur-X PDF when edited XML is well-formed but has schema, profile, or business-rule findings; the rewritten PDF still has to pass Factur-X container and PDF/A-3 checks.
+- Read complete validation and save-failure details in resizable, scrollable dialogs, including rule IDs, locations, artefacts, failed tests, and validator roles.
+- Repair supported Factur-X XMP/output-intent and attachment metadata defects while re-embedding XML. The safe staging repair can remove stale Factur-X attachment references, remove an empty AcroForm with no widgets, and embed mapped Standard-14 Helvetica/Times-family font substitutions, including nested form resources.
 
 - Start in a centered, right-sized window instead of allocating a maximized graphics surface immediately.
 - Preview PDFs with a bounded viewport-aware renderer designed for integrated GPUs and low-memory computers.
@@ -41,7 +46,7 @@ This guide applies to the `peppol-utils-0.8.0.jar` desktop app. Version 0.8.0 re
 
 - Search a signed, versioned e-invoicing documentation bundle locally from `Utilities` > `AI Wiki`.
 - Ask questions through local Ollama or optional Gemini and OpenAI providers, and inspect application-generated source cards.
-- Continue using local source search when the selected provider is unavailable; questions with insufficient evidence are not sent to any provider.
+- Continue using local source search when the selected provider is unavailable. The current question may be sent alone to the selected provider for bounded search planning before local retrieval; questions with insufficient evidence do not trigger an answer request.
 - Convert UBL Invoice/CreditNote to CII and CII/Factur-X XML to UBL from `Conversion`.
 - Generate Base or Full France CTC Flow 1 XML while retaining CII or UBL syntax.
 - Validate Flux 1 and Flux 10 with the Helger phive rules selected from the Flux 1 BT-24/CustomizationID trajectory or the Flux 10 `<Report>` root.
@@ -73,7 +78,7 @@ launch Peppol-utils from the Start menu or the optional desktop shortcut.
 For the universal JAR, put the jar in a folder you can find, for example
 `Downloads` or `Documents`. Open PowerShell in that folder and run:
 ```powershell
-java -jar .\peppol-utils-0.8.0.jar
+java -jar .\peppol-utils-1.0.0.jar
 ```
 
 ## 4. Open An Invoice
@@ -133,6 +138,7 @@ Available actions:
 
 - Edit the XML directly in the editor.
 - Click `Format XML` to pretty-print the XML.
+- Use the `-` and `+` controls to adjust XML editor text size from 75% to 200%; generated and converted XML tabs provide the same controls.
 - Press `Ctrl+F` to search in the XML.
 - Use `Previous`, `Next`, and `Close` in the search bar.
 - Click `Visualize` to generate a PDF preview from the current XML.
@@ -151,7 +157,7 @@ To check publication status:
 2. Review the detected seller and buyer electronic addresses and schemes.
 3. Click `Check Participant Information`.
 4. Review the separate `Production` and `Test` results.
-5. Review the invoice-type badge in each Production and Test row, then expand a result to inspect the discovery details. These can include the SML DNS zone, SMP URL, a single active Billing Invoice access point, Document Type details, and optional Business Card company names, country, and registration date when the SMP provides them. Document Type details are collapsed by default; expand one to see its blue bold name, scheme and identifier/value, plus each matching process row. The collapsed `SMP` header shows the SMP URL; expand it to inspect the signing certificate details embedded in validated SMP XML signatures (subject, issuer, serial, validity, key, and certificate signature algorithm) when available. This is distinct from both the SMP server TLS certificate and the AP endpoint certificate. The collapsed `Access Point` header shows the selected endpoint URL; expand it under `SMP & AP` to inspect the transport, URL, service, contact, certificate, activation, expiry, and status metadata once for the lookup result when the SMP supplies it. The certificate fields describe the AP endpoint certificate published in SMP service metadata; the SMP server TLS certificate is not captured. Click `Refresh` to bypass the short-lived cache and run the checks again.
+5. Review the invoice-type badge in each Production and Test row, then expand a result to inspect the discovery details. These can include the SML DNS zone, SMP URL, a selected Billing Invoice access point (active when available, otherwise the earliest future or another inactive endpoint), Document Type details, and optional Business Card company names, country, and registration date when the SMP provides them. Document Type details are collapsed by default; expand one to see its blue bold name, scheme and identifier/value, plus each matching process pair in its own card with service activation, expiry, and lifecycle status. The collapsed `SMP` header shows the SMP URL; expand it to inspect the signing certificate details embedded in validated SMP XML signatures (subject, issuer, serial, validity, key, and certificate signature algorithm) when available. This is distinct from both the SMP server TLS certificate and the AP endpoint certificate. The collapsed `Access Point` header shows the selected endpoint URL and lifecycle status; expand it under `SMP & AP` to inspect the transport, URL, service, contact, certificate, activation, expiry, and status metadata once for the lookup result when the SMP supplies it. A `Not yet active` endpoint is published metadata, not a currently usable route. The certificate fields describe the AP endpoint certificate published in SMP service metadata; the SMP server TLS certificate is not captured. Click `Refresh` to bypass the short-lived cache and run the checks again.
 
 Production and Test are checked independently. The Peppol overview reports two separate conclusions: document-type publication (`published by SMP`, `not published by SMP`, or `publication unknown`) and advertised process/endpoint metadata (`active AS4 v2 endpoint metadata available`, `active endpoint metadata available; choose a process`, `no matching active endpoint metadata`, or `process/endpoint unresolved`). Document publication uses the exact Peppol document type identifier first (case-sensitive scheme and value), then the standard Peppol Wildcard Scheme. An exact same-scheme/value registration takes precedence; otherwise the selector chooses the wildcard with the greatest number of matching CustomizationID parts. A published document type is not by itself proof that a requested process can be delivered; an active metadata row is not an AS4 reachability test.
 
@@ -172,7 +178,7 @@ Use `Utilities` > `Peppol lookup` in the left sidebar when the participant is no
 1. Enter an identifier such as `0225:152857363`. The full `iso6523-actorid-upis::0225:152857363` form is also accepted.
 2. Click `Look up participant` or press Enter.
 3. Review the separate Production and Test results below the search box.
-4. Expand the environment details to inspect its SML/SMP source, the collapsed SMP panel with signing certificate details from validated XML signatures, Document Type details, the collapsed Access Point panel with the selected Billing Invoice endpoint URL and metadata, and optional Business Card. SMP signing certificates, AP endpoint certificates, and the SMP server TLS certificate are distinct; the TLS peer certificate is not captured.
+4. Expand the environment details to inspect its SML/SMP source, the collapsed SMP panel with signing certificate details from validated XML signatures, Document Type details, the collapsed Access Point panel with the selected Billing Invoice endpoint URL, lifecycle status, and metadata, and optional Business Card. SMP signing certificates, AP endpoint certificates, and the SMP server TLS certificate are distinct; the TLS peer certificate is not captured.
 
 The identifier is checked locally before any request is sent. Each lookup is user initiated, Production and Test stay independent, and a network failure remains distinct from a participant that is not registered.
 
@@ -191,7 +197,7 @@ The app activates a new bundle only after a complete staged validation. A failed
 
 The main area is the AI Wiki chat. The conversation and composer share a centered reading column so long answers remain readable on wide displays. Click `Settings` to update the bundle and choose Ollama local, Gemini, or OpenAI.
 
-You can search locally even when the selected provider is unavailable. Questions in English, French, or Vietnamese use the signed bundle's BM25 index and a curated e-invoicing terminology catalog. When a configured provider is available, it may prepare bounded English, French, and keyword search variants before local retrieval. Follow-up retrieval uses the preceding user question to resolve the referenced standard or concept while the current question remains the one answered. For a question that asks for a list, count, or document-wide explanation, the app chooses the most relevant current source and supplies contiguous source pages rather than disconnected snippets. If no result meets the relevance threshold, the app reports insufficient evidence and does not request an answer from the provider.
+You can search locally even when the selected provider is unavailable. Questions in English, French, or Vietnamese use the signed bundle's BM25 index and a curated e-invoicing terminology catalog. When a configured provider is available, it may prepare bounded English, French, and keyword search variants from the current question alone before local retrieval. Follow-up retrieval also uses the preceding user question locally to resolve the referenced standard or concept while the current question remains the one answered. For a question that asks for a list, count, or document-wide explanation, the app chooses the most relevant current source and supplies contiguous source pages rather than disconnected snippets. If no result meets the relevance threshold, the app reports insufficient evidence and does not request an answer from the provider.
 
 For a synthesized answer:
 
@@ -206,7 +212,7 @@ Hover over a message to reveal its small copy icon inside the upper-right corner
 
 The selected provider and cloud model names are remembered. Cloud API keys may be supplied through environment variables or saved in `~/.peppol-utils/knowledgebase.json`; the file is written atomically with owner-only POSIX permissions where supported, but its contents are not encrypted. Prefer environment variables or an operating-system credential workflow on managed devices.
 
-The provider receives the question, at most six recent turns, and selected source excerpts. The app does not attach an invoice or send invoice XML/PDF content. `Stop` cancels an active response, and normal invoice features remain available if GitHub or the provider is offline.
+For search planning, the selected provider receives only the current question. If the evidence is sufficient and you request a synthesized answer, the provider receives the current question, at most six recent turns, and selected source excerpts. The app does not attach an invoice or send invoice XML/PDF content. `Stop` cancels an active response, and normal invoice features remain available if GitHub or the provider is offline.
 
 AI output is explanatory, not authoritative validation, legal advice, or tax advice. Follow the immutable source link and check the cited version when accuracy matters.
 
@@ -316,7 +322,8 @@ Important:
 - Make your own copy of the invoice before editing if you need to keep the original.
 - For standalone XML files, the app validates the edited XML before overwriting the XML file.
 - For PDF files, the app validates the edited XML, re-embeds it into the PDF, validates the rewritten PDF, and then replaces the original PDF.
-- If validation finds blocking `ERROR` or `FATAL` findings, the app shows those errors and asks whether you want to save the invalid XML anyway. Choose this only when you intentionally need an invalid file for testing.
+- If validation finds blocking `ERROR` or `FATAL` findings, the app shows the complete rule IDs, messages, locations, and available validator details in a resizable, scrollable dialog and asks whether you want to save the invalid XML anyway. For a Factur-X PDF, `Save anyway` permits XML schema, profile, or business-rule findings, but the embedded XML must still be readable and the rewritten PDF must pass Factur-X BR-HYBRID/XMP, attachment, and PDF/A-3 checks. For a standalone XML file, the explicit low-level save option retains its historical ability to write invalid XML. Choose this only when you intentionally need an XML-invalid file for testing.
+- PDF re-embedding uses Mustangproject's `ZUGFeRDExporterFromA3`. When the source has damaged or missing hybrid metadata such as XMP or output intents, the save path may rebuild that container metadata from a sanitized PDFBox staging copy. That staging repair removes only Factur-X attachment references, preserves unrelated name trees and associated files, can remove an empty AcroForm only when it has no fields or widget annotations, and can recursively replace unembedded Standard-14 Helvetica/Times-family fonts with embedded TrueType substitutions. Supported substitutions retain widths and any existing ToUnicode map where possible, but may normalize a non-PDF/A source encoding to WinAnsi; the final Kaltblut and veraPDF checks remain mandatory, including for PDF/A-3U Unicode requirements. It does not flatten live forms, remove widgets or signature fields, or replace arbitrary/unmappable fonts. A save error also opens its full available details in the same scrollable dialog.
 - If a normal save—or a save after you choose `Save anyway` for XML business-rule findings—fails because a preserved PDF digital signature makes the rewritten PDF/A container invalid, the app offers an explicit unsigned test-copy recovery. The suggested output is `<stem>-invalid.pdf`; it removes the PDF signature fields/widgets and signature permissions only from that new copy, never from or over the original signed invoice. The recovery still requires well-formed, XML-schema-valid XML and a valid Factur-X/PDF-A container; only the already-confirmed business-rule (Schematron) bypass is retained.
 
 After saving, the app reopens the saved file and shows the validation result.
@@ -351,7 +358,7 @@ java -version
 Run it from PowerShell so you can see the error:
 
 ```powershell
-java -jar .\peppol-utils-0.8.0.jar
+java -jar .\peppol-utils-1.0.0.jar
 ```
 
 Check that:
@@ -398,15 +405,15 @@ Choose `Exit and cancel` in the confirmation dialog. This stops the active opera
 
 Saving can fail when:
 
-- The edited XML is not well-formed.
+- The edited XML is not well-formed or exceeds the input limit.
 - The edited XML does not pass validation.
-- The PDF cannot be rewritten safely.
+- The PDF cannot be rewritten safely or its Factur-X/PDF/A-3 container remains invalid.
 - The file is open in another app.
 - The folder is read-only.
 
 For a signed Factur-X PDF, the normal save attempt always runs first. If edited XML has blocking business-rule findings, the app still asks whether to choose `Save anyway`. If either save path then fails specifically because the preserved signature invalidates the staged PDF, choose the offered unsigned test copy and a separate `<stem>-invalid.pdf` destination. This is a diagnostic file with no valid signature; sign the final production PDF again. Cancelling the prompt leaves the source unchanged. Unrelated PDF, container, syntax, and schema failures keep the normal `Save failed` behavior.
 
-Fix the reported issue, close other apps that may be using the invoice, and try again.
+Fix the reported issue, close other apps that may be using the invoice, and try again. The save dialogs keep the complete available validator details in a scrollable text area so long rule messages are not cut off.
 
 ### Peppol lookup fails
 
