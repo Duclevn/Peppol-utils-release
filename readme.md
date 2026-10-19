@@ -1,8 +1,8 @@
-# Peppol-utils 1.1.0 End-User Guide
+# Peppol-utils 1.2.0 End-User Guide
 
 ## Table Of Contents
 
-- [What's New In 1.1.0](#whats-new-in-110)
+- [What's New In 1.2.0](#whats-new-in-120)
 
 **Getting started**
 
@@ -28,9 +28,16 @@
 14. [Troubleshooting](#14-troubleshooting)
 15. [Safe Use Recommendation](#15-safe-use-recommendation)
 
-## What's New In 1.1.0
+## What's New In 1.2.0
 
-This guide applies to the `peppol-utils-1.1.0.jar` desktop app. Version 1.1.0 upgrades the bundled validation and conversion libraries:
+This guide applies to the `peppol-utils-1.2.0.jar` desktop app. Version 1.2.0 makes the workbench easier to read, operate from the keyboard and use with a screen reader. Invoice handling, validation rules and conversion are unchanged from 1.1.0.
+
+- The workbench is easier to use from the keyboard and at larger text sizes (see [Keyboard shortcuts, interface zoom and cancelling](#keyboard-shortcuts-interface-zoom-and-cancelling)); validation results now say when they are out of date or could not run (with `Retry`), and findings can be filtered, copied and located in the XML (see [Validate The Invoice](#9-validate-the-invoice)).
+- Control outlines, XML comments and line numbers are easier to see, the selected tab and validation row are marked by a bar as well as a tint, the interface follows Windows High Contrast, and a finished validation moves focus to the verdict (see the same section). Screen readers can read the XML editors and name every summary, validation and Peppol value by its label, and when Peppol results are rebuilt, keyboard focus returns to the Seller/Buyer box, `Check` button or lookup control you used (while a lookup runs and that control is disabled, focus waits on the Peppol panel). The selected Seller/Buyer box is marked by a filled dot and a stronger edge, not only a tint.
+- In a narrow window or at a large zoom, the `Validation` tab rearranges itself instead of cutting content off.
+- Production/Test marks tell a failed lookup (`!`) apart from one not yet run (`–`); hover over an environment to see its full result.
+
+Version 1.1.0 upgraded the bundled validation and conversion libraries:
 
 - Validation uses the latest rule versions bundled with the app: Factur-X 1.0.9-2, France CTC 1.4-04, and France PPF Flux 1 and Flux 10 1.1.
 - With `France CTC` selected, Factur-X BASIC WL, EN 16931, and EXTENDED invoices are checked with the dedicated France CTC Factur-X rule sets.
@@ -81,7 +88,7 @@ launch Peppol-utils from the Start menu or the optional desktop shortcut.
 For the universal JAR, put the jar in a folder you can find, for example
 `Downloads` or `Documents`. Open PowerShell in that folder and run:
 ```powershell
-java -jar .\peppol-utils-1.1.0.jar
+java -jar .\peppol-utils-1.2.0.jar
 ```
 
 ## 4. Open An Invoice
@@ -102,6 +109,33 @@ For a PDF invoice, the app shows:
 - `Validation`: validation messages and warnings.
 
 For a standalone XML invoice, the PDF tab is disabled and the XML/summary/validation views are used.
+
+### Keyboard shortcuts, interface zoom and cancelling
+
+| Shortcut | Action |
+| --- | --- |
+| `Ctrl+O` | Open an invoice |
+| `Ctrl+S` | Save changes (when there are unsaved changes) |
+| `F5` or `Ctrl+Enter` | Validate the current XML |
+| `Ctrl+Tab` / `Ctrl+Shift+Tab` | Next / previous workbench tab |
+| `Ctrl+F` | Search in the XML editor (the invoice's, or a generated or converted tab's) |
+| `Ctrl+W` | Close the selected generated or converted XML tab (asks first when it has unsaved changes) |
+| `Ctrl+=` / `Ctrl+-` / `Ctrl+0` | Make the whole interface larger / smaller / back to 100% (80% to 160%, remembered between sessions) |
+| `Enter` / `Ctrl+C` in the findings table | Show the selected finding in the XML / copy it |
+| `Esc` | Cancel the running operation |
+| `Enter` / `Shift+Enter` in the Find field | Next / previous match (typing searches after a short pause) |
+
+The shortcuts are shown in the tooltips of `Open invoice`, `Save changes` and `Validate`, and a screen reader announces them as each command's help text. The row menu of the findings table lists its keys in the menu text (`Show in XML (Enter)`, `Copy finding (Ctrl+C)`); they only act in the table. They do nothing while the button they stand for is disabled. On macOS, `Ctrl` is `⌘`.
+
+While validation, opening, conversion, Flow 1 generation or visualization is running, a `Cancel` button (or `Esc`) appears under the progress indicator. It stops that operation's background worker, leaves your document and the previous results untouched, and reports `... cancelled.` in the status bar. Saving and repairing cannot be cancelled from there, because they must finish or restore the original file. While the progress overlay is shown, `Tab` stays on the `Cancel` button rather than moving to the controls behind it; `Ctrl+Tab` still switches tabs.
+
+While one of these operations runs, every XML editor (the invoice's and those of generated or converted documents) is read-only and `Ctrl+Tab` and `Ctrl+W` do nothing, so what is saved or validated is exactly what you see. `Format XML` also runs in the background now, so formatting a very large document no longer freezes the window, and editing a generated document stays responsive because its syntax colours refresh after a short pause.
+
+When a `Validate` run finishes and you have not moved to another tab or control in the meantime, keyboard focus moves to the verdict at the top of the `Validation` tab (for example `Validation failed`), so a screen reader reads the outcome. If you have switched away, focus is left where you put it.
+
+All pixel widths follow the interface zoom, including the conversion buttons, the Summary and Validation labels, the validation table columns and the About dialog. In a narrow window or at a large zoom the `Validation` tab rearranges itself instead of cutting content off: the details of the selected finding move under the table, `Repair PDF` moves under the verdict, the filters above the table wrap to their own row, the `Validation set` column is hidden (the set is still shown in the details and the filter), and the tab scrolls when the window is too short. When Windows High Contrast is on, the workbench uses your high-contrast colours instead of its own palette; the selected row, tab and finding stay marked by an underline or bar rather than by colour alone.
+
+Dialogs that could lose work (`Save changes` over the original file, `Discard`, `Save anyway`, `Save unsigned test copy`, `Exit and cancel`) never take `Enter` as their default: `Enter` or `Esc` always chooses `Cancel` / `Keep working`. Failures show a short cause and what to try next; click `Show Details` for the full technical message.
 
 ## 5. Read The Summary
 
@@ -127,8 +161,8 @@ Open the `PDF` tab.
 
 Use:
 
-- `<` and `>` to move between pages.
-- `-` and `+` to zoom out and in.
+- `<` and `>` (`Previous page` / `Next page`) to move between pages.
+- `-` and `+` (`Zoom out` / `Zoom in`) to change the page size.
 - The scrollbars to move around the page when it is larger than the view.
 
 The PDF page is centered in the view with padding around it. The PDF tab is only available when the opened invoice is a PDF.
@@ -141,7 +175,8 @@ Available actions:
 
 - Edit the XML directly in the editor.
 - Click `Format XML` to pretty-print the XML.
-- Use the `-` and `+` controls to adjust XML editor text size from 75% to 200%; generated and converted XML tabs provide the same controls.
+- Click `Copy XML` to copy the whole XML to the clipboard.
+- Use the `-` and `+` controls to adjust XML editor text size from 75% to 200%.
 - Press `Ctrl+F` to search in the XML.
 - Use `Previous`, `Next`, and `Close` in the search bar.
 - Click `Visualize` to generate a PDF preview from the current XML.
@@ -149,6 +184,10 @@ Available actions:
 - Use the editor scrollbars to move vertically or horizontally through long XML files.
 
 When you edit the XML, the app marks the invoice as `Unsaved`.
+
+A screen reader reads the editor as a text area named `Invoice XML`: it can read the XML line by line, follow the caret and announce selected text. `Show in XML` also states the line and column in the status bar.
+
+Generated and converted XML tabs have the same editor (named after the tab, for example `Converted UBL XML`), the same text-size controls, `Copy XML` and `Ctrl+F` search, plus a `Close tab` button. `Close tab`, `Ctrl+W` and the tab's own close button all ask before discarding unsaved changes.
 
 ## 8. Check Peppol Participant Information
 
@@ -170,7 +209,7 @@ For a recognized Factur-X hybrid PDF with explicit France CTC buyer routing (`sc
 
 *Peppol participant information in the Summary tab. Production and Test are reported independently; this example shows a participant registered in Test but not in Production, with the invoice type unsupported in both environments.*
 
-Registration and invoice-type support are separate results. A participant can be registered while not publishing the exact document type required by the open invoice. Possible registration results are registered, not registered, and lookup failed. A missing address, missing or invalid `schemeID`, email address, or non-registrable scheme is explained without sending a lookup.
+Registration and invoice-type support are separate results. A participant can be registered while not publishing the exact document type required by the open invoice. Possible registration results are registered, not registered, and lookup failed. Each Production/Test option shows a mark: `✓` registered, `⚠` not registered, `!` lookup failed, `–` not checked yet and `…` while checking; hover over it to see the full result. A missing address, missing or invalid `schemeID`, email address, or non-registrable scheme is explained without sending a lookup.
 
 Peppol lookup requires internet access. It queries Peppol SML/SMP discovery services only when you explicitly run a lookup; opening and validating an invoice do not automatically contact the network. A Peppol result describes discovery metadata at the time of the check and is not a guarantee that a future document transmission will succeed.
 
@@ -187,7 +226,7 @@ The identifier is checked locally before any request is sent. Each lookup is use
 
 ## 9. Validate The Invoice
 
-Choose a validation profile in the left sidebar:
+Choose the `Validation profile` in the left sidebar:
 
 - `Default`: general Factur-X / EN 16931 validation.
 - `France CTC`: Flux 1 and Flux 10 use the Helger phive rule sets automatically. Flux 1 CII/UBL selects the Base/Démarrage or Full/Cible VESID from BT-24/CustomizationID, while the namespace-less Flux 10 `<Report>` selects the latest bundled `fr.ctc.flux10:report` set (1.1). Other documents first validate the exact detected invoice schema/profile VESID, then run the legacy 1.3.1 and latest bundled France CTC rule sets for CII/UBL EN 16931, CII/UBL Extended, UBL CreditNote, Factur-X, or CDAR. Factur-X BASIC WL, EN 16931, and EXTENDED use the dedicated France CTC Factur-X rule sets. The legacy set is skipped if it is not bundled.
@@ -196,23 +235,39 @@ Click `Validate`.
 
 For a saved Factur-X PDF, the default validation covers the complete hybrid document: Kaltblut checks the Factur-X/ZUGFeRD BR-HYBRID container and XMP rules, veraPDF checks PDF/A-3 conformance, and DDD/phive check the embedded XML schema and business rules. PDF/A findings include the veraPDF rule and PDF object location. Container and XMP checks also run when `France CTC` is selected, alongside that profile's XML validation route.
 
-Before validation is run, the `Validation` tab says `Not validated yet`; opening an invoice does not imply that it passed. A `Compliance & format` strip repeats the detected format, XML syntax, profile, guideline, and VESID from Summary for quick reference before validation.
+Before validation is run, the `Validation` tab says `Not validated yet`; opening an invoice does not imply that it passed. The header repeats the detected XML syntax, profile, guideline, and VESID from Summary for quick reference.
 
-After validation, the tab shows an overall result and error, warning, and check/information counts. The headline identifies the validation set responsible for a failure when only one set has blocking errors. Results are grouped into user-facing sets such as invoice profile rules, France CTC, and the Factur-X PDF container; engine names such as PHIVE and Kaltblut remain available in technical details.
+After validation, the headline gives the overall result: `Validation passed`, `Validation passed with warnings`, or `Validation failed`. It names the validation set when only one set is responsible, or the number of sets otherwise. The line under it reads `Profile: <profile> · Ran: <sets>` and lists each validation set that reported findings as passed, passed with warnings, or failed (for example `Invoice profile rules — failed (1 error)`). The validators do not report which rule sets executed, so a set that produced no findings at all is not listed; the line never claims a set ran when it reported nothing. Passed checks and profile-detection messages are not listed as rows.
 
-The table shows actionable errors and warnings, while passed checks and profile-detection messages remain summarized above. Select an issue to inspect its rule ID, description, element XPath, and expected or allowed values when the validator references a bundled code list. Expand `Technical details` for the validator test, engine/layer, rule artefact, source document, and Schematron role when supplied. The technical validator test is the XPath/Schematron condition evaluated by the validation engine; it is diagnostic logic, not usually a value to paste into the invoice.
+The table shows only errors and warnings. Blocking errors come first, then warnings; within each group the current rule sets come before the legacy `FR CTC old` set. The first blocking issue is selected for you. Use the two lists above the table to show only errors or warnings, or only one validation set; the counter then reads `2 of 7 issues`.
+
+Select an issue to inspect, in the details panel beside the table (under it in a narrow window), its rule ID, description, element XPath, and expected or allowed values when the validator references a bundled code list. Expand `Technical details` for the validator test, engine/layer, rule artefact, source document, and Schematron role when supplied. The technical validator test is the XPath/Schematron condition evaluated by the validation engine; it is diagnostic logic, not usually a value to paste into the invoice.
+
+For the selected issue you can:
+
+- Click `Show in XML`, press `Enter`, or double-click the row to move the XML editor to the element named by the finding's XPath. This is best effort: the element is matched by name and position among its siblings, namespace prefixes are ignored, and the status bar says so when the element cannot be found or the finding has no element location (for example a PDF container finding). If the results are out of date the element may have moved.
+- Click `Copy finding` (or press `Ctrl+C` in the table) to copy that finding with its validation set, rule, locations, test and guidance.
+- Use `Copy report` above the table, or the row's right-click menu, to copy every finding.
+
+The table columns are:
 
 - Severity
 - Validation set
 - Rule code
 - Message
-- Element/context, XPath test, source, and artefact in the detail panel
 
-If there are no validation issues, the table reports an OK result. The validation table labels detected schema/profile findings as `PHIVE`, France CTC 1.3.1 findings as `FR CTC old`, and findings from the latest bundled France CTC version as `FR CTC`. Both France CTC versions run when 1.3.1 is available in Helger phive; if a future dependency release removes it, only the latest set runs. Warnings remain non-blocking; validator execution failures and error/fatal assertions block strict saving.
+Two situations never look like a normal result:
+
+- **Results out of date.** If you edit the XML or change the validation profile after a run, the headline turns neutral and reads `Results out of date — XML changed` (or `— validation profile changed`) and the table is dimmed. Nothing is re-evaluated until you click `Validate` again. Opening a CDAR message switches the profile to `France CTC` automatically and says so in the status bar.
+- **Validation could not run.** If the validator itself fails (for example its worker process cannot start), the tab shows `Validation could not run` with the cause and a `Retry validation` button. The earlier report is cleared, so it cannot be mistaken for a verdict on the current XML.
+
+If there are no errors or warnings, the table says so. Findings are grouped under user-facing validation set names: `Invoice profile rules` (the detected schema/profile VESID, run by phive), `FR CTC` (the latest bundled France CTC version), `FR CTC old` (the legacy 1.3.1 set), and `Factur-X PDF container`; engine names such as PHIVE and Kaltblut stay in the technical details. Both France CTC versions run when 1.3.1 is available in Helger phive; if a future dependency release removes it, only the latest set runs. Warnings remain non-blocking; validator execution failures and error/fatal assertions block strict saving.
 
 Flux 1 trajectory selection uses `urn.cpro.gouv.fr:1p0:einvoicingextract#Base` for Démarrage and `...#Full` for Cible. The service reports the latest bundled `fr.ctc.flux1:*` VESID (currently 1.1) in the ordinary PHIVE validation set. Generated Flow 1 output still applies the field catalog and temporary operational mapping before running the same phive-backed completeness check.
 
 ![France CTC validation results showing an error and warning for the same rule in the current and legacy rule sets.](docs/images/france-ctc-validation-results.png)
+
+*This screenshot comes from an earlier build and is not regenerated for every release: the product name, the sort order (blocking issues first) and the filter and action controls above the table differ from what you see now.*
 
 *France CTC validation result. Select a row to see the rule ID, description, element/context, and technical details in the panel on the right. The same assertion can appear once for the current France CTC rules and once for the legacy `FR CTC old` rules.*
 
@@ -226,8 +281,8 @@ The app generates a PDF preview from the current XML and opens the `Visualize in
 
 Use:
 
-- `<` and `>` to move between generated preview pages.
-- `-` and `+` to zoom out and in.
+- `<` and `>` (`Previous page` / `Next page`) to move between generated preview pages.
+- `-` and `+` (`Zoom out` / `Zoom in`) to change the page size.
 - `Save as...` to export the generated PDF visualization.
 - The scrollbars to move around pages larger than the view.
 
@@ -235,12 +290,12 @@ This preview helps you inspect how the XML invoice content could look as a reada
 
 ## 11. Convert Between UBL And CII
 
-Select `Conversion` in the left sidebar. The screen uses the current XML editor content, including unsaved edits.
+Select `Conversion` in the left sidebar (or its tab; the sidebar button is highlighted while that tab is showing). The screen uses the current XML editor content, including unsaved edits.
 
 - Click `UBL to CII` for a UBL 2.1 Invoice or CreditNote. The app opens a `Converted CII` tab.
 - Click `CII to UBL` for CII / Factur-X XML. The app opens a `Converted UBL` tab.
 - Click `XML to PDF` to open a generated preview in the `Visualize invoice` tab.
-- Click `FR CTC F1` to generate a France CTC Flow 1 XML document from supported CII or UBL input.
+- Click `France CTC Flow 1` to generate a France CTC Flow 1 XML document from supported CII or UBL input.
 
 Each syntax-conversion button is enabled only when the current XML has the matching input syntax. CII input can be:
 
@@ -251,8 +306,9 @@ UBL input is a standalone `.xml` UBL Invoice or CreditNote. The original invoice
 
 In the result tab, you can:
 
-- Edit or format the generated XML.
+- Edit or format the generated XML, search it with `Ctrl+F`, or copy it with `Copy XML`.
 - Click `Save as...` and choose where to write the CII or UBL XML file.
+- Click `Close tab` (or press `Ctrl+W`) when you are done.
 
 The suggested output names follow this pattern:
 
@@ -267,7 +323,7 @@ For France CTC compatibility, the app also cleans up converted UBL identifiers t
 
 ## 12. Generate France CTC Flow 1 XML
 
-Open any supported CII or UBL invoice, then select `Conversion` and click `FR CTC F1`.
+Open any supported CII or UBL invoice, then select `Conversion` and click `France CTC Flow 1`.
 
 1. Choose `Base` or `Full`. `Base` is selected by default.
 2. For ordinary invoices, choose the applicable France CTC billing framework (BT-23) from the required list.
@@ -275,7 +331,7 @@ Open any supported CII or UBL invoice, then select `Conversion` and click `FR CT
    and B9/S9/M9 source invoices, the generated split documents keep their per-unit
    billing frameworks from the source invoice; no framework selection is required.
 3. Click `Generate`.
-4. Review the generated `France CTC F1 Base (...)` or `France CTC F1 Full (...)` tab.
+4. Review the generated `France CTC Flow 1 Base (...)` or `France CTC Flow 1 Full (...)` tab.
 5. Use `Format XML` or edit the XML if needed.
 6. Click `Save as...` and choose an output location.
 
@@ -287,7 +343,7 @@ The source invoice is not overwritten. The suggested filename is prefixed with t
 
 Click `Save changes`.
 
-The app shows the complete source path and lets you either overwrite the opened invoice or use `Save a copy...`. Saving a copy stages the new file before replacing the selected destination, so the original invoice remains unchanged.
+The app shows the complete source path and lets you either overwrite the opened invoice or use `Save a copy...`. `Enter` in this dialog chooses `Cancel`, not the overwrite. Saving a copy stages the new file before replacing the selected destination, so the original invoice remains unchanged.
 
 Important:
 
@@ -295,8 +351,8 @@ Important:
 - Make your own copy of the invoice before editing if you need to keep the original.
 - For standalone XML files, the app validates the edited XML before overwriting the XML file.
 - For PDF files, the app validates the edited XML, re-embeds it into the PDF, validates the rewritten PDF, and then replaces the original PDF.
-- If validation finds blocking `ERROR` or `FATAL` findings, the app shows the complete rule IDs, messages, locations, and available validator details in a resizable, scrollable dialog and asks whether you want to save the invalid XML anyway. For a Factur-X PDF, `Save anyway` permits XML schema, profile, or business-rule findings, but the embedded XML must still be readable and the rewritten PDF must pass Factur-X BR-HYBRID/XMP, attachment, and PDF/A-3 checks. For a standalone XML file, the explicit low-level save option retains its historical ability to write invalid XML. Choose this only when you intentionally need an XML-invalid file for testing.
-- PDF re-embedding uses Mustangproject's `ZUGFeRDExporterFromA3`. When the source has damaged or missing hybrid metadata such as XMP or output intents, the save path may rebuild that container metadata from a sanitized PDFBox staging copy. That staging repair removes only Factur-X attachment references, preserves unrelated name trees and associated files, can remove an empty AcroForm only when it has no fields or widget annotations, and can recursively replace unembedded Standard-14 Helvetica/Times-family fonts with embedded TrueType substitutions. Supported substitutions retain widths and any existing ToUnicode map where possible, but may normalize a non-PDF/A source encoding to WinAnsi; the final Kaltblut and veraPDF checks remain mandatory, including for PDF/A-3U Unicode requirements. It does not flatten live forms, remove widgets or signature fields, or replace arbitrary/unmappable fonts. A save error also opens its full available details in the same scrollable dialog.
+- If validation finds blocking `ERROR` or `FATAL` findings, the app shows the complete rule IDs, messages, locations, and available validator details under `Show Details` in a dialog and asks whether you want to save the invalid XML anyway. The dialog opens with the error and warning counts for each validation set and offers `Review in Validation tab`, `Save anyway` and `Cancel`; the app does not switch tabs until you answer, and `Cancel` is the `Enter` default. For a Factur-X PDF, `Save anyway` permits XML schema, profile, or business-rule findings, but the embedded XML must still be readable and the rewritten PDF must pass Factur-X BR-HYBRID/XMP, attachment, and PDF/A-3 checks. For a standalone XML file, the explicit low-level save option retains its historical ability to write invalid XML. Choose this only when you intentionally need an XML-invalid file for testing.
+- PDF re-embedding uses Mustangproject's `ZUGFeRDExporterFromA3`. When the source has damaged or missing hybrid metadata such as XMP or output intents, the save path may rebuild that container metadata from a sanitized PDFBox staging copy. That staging repair removes only Factur-X attachment references, preserves unrelated name trees and associated files, can remove an empty AcroForm only when it has no fields or widget annotations, and can recursively replace unembedded Standard-14 Helvetica/Times-family fonts with embedded TrueType substitutions. Supported substitutions retain widths and any existing ToUnicode map where possible, but may normalize a non-PDF/A source encoding to WinAnsi; the final Kaltblut and veraPDF checks remain mandatory, including for PDF/A-3U Unicode requirements. It does not flatten live forms, remove widgets or signature fields, or replace arbitrary/unmappable fonts. A save error opens a short cause and next step, with the full available details under `Show Details`.
 - If a normal save—or a save after you choose `Save anyway` for XML business-rule findings—fails because a preserved PDF digital signature makes the rewritten PDF/A container invalid, the app offers an explicit unsigned test-copy recovery. The suggested output is `<stem>-invalid.pdf`; it removes the PDF signature fields/widgets and signature permissions only from that new copy, never from or over the original signed invoice. The recovery still requires well-formed, XML-schema-valid XML and a valid Factur-X/PDF-A container; only the already-confirmed business-rule (Schematron) bypass is retained.
 
 After saving, the app reopens the saved file and shows the validation result.
@@ -331,7 +387,7 @@ java -version
 Run it from PowerShell so you can see the error:
 
 ```powershell
-java -jar .\peppol-utils-1.1.0.jar
+java -jar .\peppol-utils-1.2.0.jar
 ```
 
 Check that:
@@ -386,7 +442,7 @@ Saving can fail when:
 
 For a signed Factur-X PDF, the normal save attempt always runs first. If edited XML has blocking business-rule findings, the app still asks whether to choose `Save anyway`. If either save path then fails specifically because the preserved signature invalidates the staged PDF, choose the offered unsigned test copy and a separate `<stem>-invalid.pdf` destination. This is a diagnostic file with no valid signature; sign the final production PDF again. Cancelling the prompt leaves the source unchanged. Unrelated PDF, container, syntax, and schema failures keep the normal `Save failed` behavior.
 
-Fix the reported issue, close other apps that may be using the invoice, and try again. The save dialogs keep the complete available validator details in a scrollable text area so long rule messages are not cut off.
+Fix the reported issue, close other apps that may be using the invoice, and try again. The invalid-save dialog keeps the complete available validator details under `Show Details` so long rule messages are not cut off, and error dialogs keep the raw technical message there.
 
 ### Peppol lookup fails
 
