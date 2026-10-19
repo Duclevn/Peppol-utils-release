@@ -1,8 +1,8 @@
-# Peppol-utils 1.0.0 End-User Guide
+# Peppol-utils 1.1.0 End-User Guide
 
 ## Table Of Contents
 
-- [What's New In 1.0.0](#whats-new-in-100)
+- [What's New In 1.1.0](#whats-new-in-110)
 
 **Getting started**
 
@@ -17,7 +17,6 @@
 6. [View A PDF Invoice](#6-view-a-pdf-invoice)
 7. [Edit XML](#7-edit-xml)
 8. [Check Peppol Participant Information](#8-check-peppol-participant-information)
-- [Use The Knowledge Base](#use-the-knowledge-base)
 9. [Validate The Invoice](#9-validate-the-invoice)
 10. [Visualize Edited XML](#10-visualize-edited-xml)
 11. [Convert Between UBL And CII](#11-convert-between-ubl-and-cii)
@@ -29,9 +28,17 @@
 14. [Troubleshooting](#14-troubleshooting)
 15. [Safe Use Recommendation](#15-safe-use-recommendation)
 
-## What's New In 1.0.0
+## What's New In 1.1.0
 
-This guide applies to the `peppol-utils-1.0.0.jar` desktop app. Version 1.0.0 internally decomposes the large `FacturxService` implementation into focused components while preserving the public `FacturxService` facade, reusable `com.facturxutils` API, invoice workflows, validation semantics, and save guarantees. It retains the low-resource improvements delivered through 0.9.0: bounded startup and working memory, viewport-sized PDF rendering, AI Wiki resource unloading, and short-lived workers for validation, conversion, France CTC Flow 1 generation, and XML-to-PDF visualization.
+This guide applies to the `peppol-utils-1.1.0.jar` desktop app. Version 1.1.0 upgrades the bundled validation and conversion libraries:
+
+- Validation uses the latest rule versions bundled with the app: Factur-X 1.0.9-2, France CTC 1.4-04, and France PPF Flux 1 and Flux 10 1.1.
+- With `France CTC` selected, Factur-X BASIC WL, EN 16931, and EXTENDED invoices are checked with the dedicated France CTC Factur-X rule sets.
+- Generated Flow 1 output keeps only the VAT totals that Flux 1 rule G1.12 allows (one in EUR for EUR invoices; otherwise one in the invoice currency and one in EUR), and generated UBL Flow 1 output now passes schema validation.
+- The Flow 1 Base trajectory is labelled `Démarrage` correctly.
+- The AI Wiki (Knowledge Base) has been removed. The app no longer downloads documentation bundles or contacts Ollama, Gemini, or OpenAI; the only network access is an explicit Peppol lookup. Data left by earlier versions is not used and can be deleted manually: the AI Wiki settings file `~/.peppol-utils/knowledgebase.json` (it may contain saved Gemini/OpenAI API keys) and the downloaded bundles in `%LOCALAPPDATA%\Peppol-utils\knowledge-base` on Windows.
+
+Version 1.0.0 internally decomposes the large `FacturxService` implementation into focused components while preserving the public `FacturxService` facade, reusable `com.facturxutils` API, invoice workflows, validation semantics, and save guarantees. It retains the low-resource improvements delivered through 0.9.0: bounded startup and working memory, viewport-sized PDF rendering, and short-lived workers for validation, conversion, France CTC Flow 1 generation, and XML-to-PDF visualization.
 
 - Continue using the same supported invoice workflows and API-compatible integrations after the internal service decomposition.
 - Choose `Save anyway` for a Factur-X PDF when edited XML is well-formed but has schema, profile, or business-rule findings; the rewritten PDF still has to pass Factur-X container and PDF/A-3 checks.
@@ -40,13 +47,9 @@ This guide applies to the `peppol-utils-1.0.0.jar` desktop app. Version 1.0.0 in
 
 - Start in a centered, right-sized window instead of allocating a maximized graphics surface immediately.
 - Preview PDFs with a bounded viewport-aware renderer designed for integrated GPUs and low-memory computers.
-- Load invoice validation, visualization, AI providers, and Knowledge Base data only when their workflows need them.
-- Disable AI Wiki from its settings to release its local index, provider clients, conversations, and rendered messages.
+- Load invoice validation and visualization only when their workflows need them.
 - Edit large XML documents without applying expensive whole-document syntax highlighting above the safe interactive limit.
 
-- Search a signed, versioned e-invoicing documentation bundle locally from `Utilities` > `AI Wiki`.
-- Ask questions through local Ollama or optional Gemini and OpenAI providers, and inspect application-generated source cards.
-- Continue using local source search when the selected provider is unavailable. The current question may be sent alone to the selected provider for bounded search planning before local retrieval; questions with insufficient evidence do not trigger an answer request.
 - Convert UBL Invoice/CreditNote to CII and CII/Factur-X XML to UBL from `Conversion`.
 - Generate Base or Full France CTC Flow 1 XML while retaining CII or UBL syntax.
 - Validate Flux 1 and Flux 10 with the Helger phive rules selected from the Flux 1 BT-24/CustomizationID trajectory or the Flux 10 `<Report>` root.
@@ -78,7 +81,7 @@ launch Peppol-utils from the Start menu or the optional desktop shortcut.
 For the universal JAR, put the jar in a folder you can find, for example
 `Downloads` or `Documents`. Open PowerShell in that folder and run:
 ```powershell
-java -jar .\peppol-utils-1.0.0.jar
+java -jar .\peppol-utils-1.1.0.jar
 ```
 
 ## 4. Open An Invoice
@@ -169,7 +172,7 @@ For a recognized Factur-X hybrid PDF with explicit France CTC buyer routing (`sc
 
 Registration and invoice-type support are separate results. A participant can be registered while not publishing the exact document type required by the open invoice. Possible registration results are registered, not registered, and lookup failed. A missing address, missing or invalid `schemeID`, email address, or non-registrable scheme is explained without sending a lookup.
 
-Peppol lookup requires internet access. It queries Peppol SML/SMP discovery services only when you explicitly run a lookup; opening and validating an invoice do not automatically contact the network. Knowledge Base has a separate, explicit network flow described below. A Peppol result describes discovery metadata at the time of the check and is not a guarantee that a future document transmission will succeed.
+Peppol lookup requires internet access. It queries Peppol SML/SMP discovery services only when you explicitly run a lookup; opening and validating an invoice do not automatically contact the network. A Peppol result describes discovery metadata at the time of the check and is not a guarantee that a future document transmission will succeed.
 
 ### Look up any Peppol participant
 
@@ -182,46 +185,12 @@ Use `Utilities` > `Peppol lookup` in the left sidebar when the participant is no
 
 The identifier is checked locally before any request is sent. Each lookup is user initiated, Production and Test stay independent, and a network failure remains distinct from a participant that is not registered.
 
-## Use The AI Wiki
-
-Open `Utilities` > `AI Wiki`. The feature is disabled by default and performs no bundle download, update check, or provider request until you opt in.
-
-On first use:
-
-1. Read the disclosure.
-2. Select the acknowledgement.
-3. Click `Enable and download`.
-4. Wait while the signed manifest, checksum, archive paths, schemas, and local search index are verified.
-
-The app activates a new bundle only after a complete staged validation. A failed or untrusted update does not replace the last-known-good bundle. An authenticated revocation immediately removes the affected bundle from use and activates the newest healthy, non-revoked rollback when one is available.
-
-The main area is the AI Wiki chat. The conversation and composer share a centered reading column so long answers remain readable on wide displays. Click `Settings` to update the bundle and choose Ollama local, Gemini, or OpenAI.
-
-You can search locally even when the selected provider is unavailable. Questions in English, French, or Vietnamese use the signed bundle's BM25 index and a curated e-invoicing terminology catalog. When a configured provider is available, it may prepare bounded English, French, and keyword search variants from the current question alone before local retrieval. Follow-up retrieval also uses the preceding user question locally to resolve the referenced standard or concept while the current question remains the one answered. For a question that asks for a list, count, or document-wide explanation, the app chooses the most relevant current source and supplies contiguous source pages rather than disconnected snippets. If no result meets the relevance threshold, the app reports insufficient evidence and does not request an answer from the provider.
-
-For a synthesized answer:
-
-1. For private local generation, start Ollama and install a chat model. For cloud generation, obtain your own Gemini or OpenAI API key.
-2. Open `Settings` and choose a provider. Ollama connects only to `http://127.0.0.1:11434/api/`; cloud providers use their official HTTPS APIs.
-3. For Ollama, select an installed model. For a cloud provider, enter the exact model name, then save the settings and API key or provide the corresponding environment variable. Each cloud provider remembers its own model; `Use default` restores the bundled default name.
-4. Optionally click `Test connection`; the settings dialog confirms the connection or shows a visible error.
-5. Type a question and press Enter or click `Send`. Press Shift+Enter to insert a new line. An animated `Assistant is thinking...` indicator remains visible until the first response text arrives.
-6. Read the formatted Markdown answer, then click its source action to open the contextual source rail on the right. Sources explicitly cited as `[S1]`, `[S2]`, and so on are grouped by document with consolidated page and marker lists; repository paths and exact commits remain under `Source details`. If the provider returned no valid citation marker, the fallback source action is labeled `Retrieved sources supplied to Assistant`; local-search-only results use `Retrieved sources`.
-
-Hover over a message to reveal its small copy icon inside the upper-right corner. `Chats` opens a session-history dialog; `New chat` keeps the current conversation available while starting a clean one. This lightweight chat history lasts for the current app session and is not written to disk.
-
-The selected provider and cloud model names are remembered. Cloud API keys may be supplied through environment variables or saved in `~/.peppol-utils/knowledgebase.json`; the file is written atomically with owner-only POSIX permissions where supported, but its contents are not encrypted. Prefer environment variables or an operating-system credential workflow on managed devices.
-
-For search planning, the selected provider receives only the current question. If the evidence is sufficient and you request a synthesized answer, the provider receives the current question, at most six recent turns, and selected source excerpts. The app does not attach an invoice or send invoice XML/PDF content. `Stop` cancels an active response, and normal invoice features remain available if GitHub or the provider is offline.
-
-AI output is explanatory, not authoritative validation, legal advice, or tax advice. Follow the immutable source link and check the cited version when accuracy matters.
-
 ## 9. Validate The Invoice
 
 Choose a validation profile in the left sidebar:
 
 - `Default`: general Factur-X / EN 16931 validation.
-- `France CTC`: Flux 1 and Flux 10 use the Helger phive rule sets automatically. Flux 1 CII/UBL selects the Base/Démarrage or Full/Cible VESID from BT-24/CustomizationID, while the namespace-less Flux 10 `<Report>` selects `fr.ctc.flux10:report:1.0`. Other documents first validate the exact detected invoice schema/profile VESID, then run the legacy 1.3.1 and latest bundled France CTC rule sets for CII/UBL EN 16931, CII/UBL Extended, UBL CreditNote, Factur-X, or CDAR. The legacy set is skipped if it is not bundled.
+- `France CTC`: Flux 1 and Flux 10 use the Helger phive rule sets automatically. Flux 1 CII/UBL selects the Base/Démarrage or Full/Cible VESID from BT-24/CustomizationID, while the namespace-less Flux 10 `<Report>` selects the latest bundled `fr.ctc.flux10:report` set (1.1). Other documents first validate the exact detected invoice schema/profile VESID, then run the legacy 1.3.1 and latest bundled France CTC rule sets for CII/UBL EN 16931, CII/UBL Extended, UBL CreditNote, Factur-X, or CDAR. Factur-X BASIC WL, EN 16931, and EXTENDED use the dedicated France CTC Factur-X rule sets. The legacy set is skipped if it is not bundled.
 
 Click `Validate`.
 
@@ -241,7 +210,7 @@ The table shows actionable errors and warnings, while passed checks and profile-
 
 If there are no validation issues, the table reports an OK result. The validation table labels detected schema/profile findings as `PHIVE`, France CTC 1.3.1 findings as `FR CTC old`, and findings from the latest bundled France CTC version as `FR CTC`. Both France CTC versions run when 1.3.1 is available in Helger phive; if a future dependency release removes it, only the latest set runs. Warnings remain non-blocking; validator execution failures and error/fatal assertions block strict saving.
 
-Flux 1 trajectory selection uses `urn.cpro.gouv.fr:1p0:einvoicingextract#Base` for Démarrage and `...#Full` for Cible. The service reports the corresponding `fr.ctc.flux1:*:0.2` VESID in the ordinary PHIVE validation set. Generated Flow 1 output still applies the field catalog and temporary operational mapping before running the same phive-backed completeness check.
+Flux 1 trajectory selection uses `urn.cpro.gouv.fr:1p0:einvoicingextract#Base` for Démarrage and `...#Full` for Cible. The service reports the latest bundled `fr.ctc.flux1:*` VESID (currently 1.1) in the ordinary PHIVE validation set. Generated Flow 1 output still applies the field catalog and temporary operational mapping before running the same phive-backed completeness check.
 
 ![France CTC validation results showing an error and warning for the same rule in the current and legacy rule sets.](docs/images/france-ctc-validation-results.png)
 
@@ -301,12 +270,16 @@ For France CTC compatibility, the app also cleans up converted UBL identifiers t
 Open any supported CII or UBL invoice, then select `Conversion` and click `FR CTC F1`.
 
 1. Choose `Base` or `Full`. `Base` is selected by default.
-2. Click `Generate`.
-3. Review the generated `France CTC F1 Base (...)` or `France CTC F1 Full (...)` tab.
-4. Use `Format XML` or edit the XML if needed.
-5. Click `Save as...` and choose an output location.
+2. For ordinary invoices, choose the applicable France CTC billing framework (BT-23) from the required list.
+   The app does not guess a framework when the source does not contain one. For B8/S8/M8
+   and B9/S9/M9 source invoices, the generated split documents keep their per-unit
+   billing frameworks from the source invoice; no framework selection is required.
+3. Click `Generate`.
+4. Review the generated `France CTC F1 Base (...)` or `France CTC F1 Full (...)` tab.
+5. Use `Format XML` or edit the XML if needed.
+6. Click `Save as...` and choose an output location.
 
-The generator keeps the source syntax: CII input produces CII F1 XML, while UBL invoice or credit-note input produces UBL F1 XML. It follows the XP Z12-012 v1.4 field subset and the bundled mapping resources. Ordinary invoices open one generated tab. B8/S8/M8 multi-seller invoices open one tab per unit-invoice number, and B9/S9/M9 bidirectional invoices open the two required directions. The generated result is validated by the matching dependency-supplied phive VESID selected from its BT-24/CustomizationID trajectory; review any reported required-field findings before saving. The app does not claim a separate bundled AIFE Schematron validation route.
+The generator keeps the source syntax: CII input produces CII F1 XML, while UBL invoice or credit-note input produces UBL F1 XML. It follows the XP Z12-012 v1.4 field subset and the bundled mapping resources. Ordinary invoices open one generated tab. B8/S8/M8 multi-seller invoices open one tab per unit-invoice number, and B9/S9/M9 bidirectional invoices open the two required directions. Generation computes validation findings through the matching dependency-supplied phive VESID selected from BT-24/CustomizationID. Generated tabs intentionally save the current XML without validation, including invalid or malformed XML needed for QC testing against a Peppol system. To inspect a saved output's findings, reopen it and use Validation. The app does not claim a separate bundled AIFE Schematron validation route.
 
 The source invoice is not overwritten. The suggested filename is prefixed with the profile; split outputs also include the unit-invoice identifier.
 
@@ -358,7 +331,7 @@ java -version
 Run it from PowerShell so you can see the error:
 
 ```powershell
-java -jar .\peppol-utils-1.0.0.jar
+java -jar .\peppol-utils-1.1.0.jar
 ```
 
 Check that:
