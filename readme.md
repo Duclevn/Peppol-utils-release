@@ -1,8 +1,8 @@
-# Peppol-utils 1.2.0 End-User Guide
+# Peppol-utils 1.3.0 End-User Guide
 
 ## Table Of Contents
 
-- [What's New In 1.2.0](#whats-new-in-120)
+- [What's New In 1.3.0](#whats-new-in-130)
 
 **Getting started**
 
@@ -28,14 +28,26 @@
 14. [Troubleshooting](#14-troubleshooting)
 15. [Safe Use Recommendation](#15-safe-use-recommendation)
 
-## What's New In 1.2.0
+## What's New In 1.3.0
 
-This guide applies to the `peppol-utils-1.2.0.jar` desktop app. Version 1.2.0 makes the workbench easier to read, operate from the keyboard and use with a screen reader. Invoice handling, validation rules and conversion are unchanged from 1.1.0.
+This guide applies to the `peppol-utils-1.3.0.jar` desktop app. Version 1.3.0 polishes the workbench after 1.2.0. Invoice handling, validation rules and conversion are unchanged.
+
+- In a narrow window or at a large zoom the left sidebar shows only its icons; hover over one to see its command.
+- Focus outlines appear only while you work with the keyboard, so clicking a button no longer leaves an outline on it.
+- `Ctrl+Tab` switches tabs even from a field or value, and `Ctrl+F` opens the XML find bar from the tab strip or sidebar.
+- A finished Peppol check or participant lookup sums up its Production and Test results in the status bar, and a screen reader reads it.
+- Large invoices no longer freeze the window when they first open, and the Peppol results update without rebuilding the whole panel.
+
+### Changes in 1.2.0
+
+Version 1.2.0 made the workbench easier to read, operate from the keyboard and use with a screen reader. Invoice handling, validation rules and conversion are unchanged from 1.1.0.
 
 - The workbench is easier to use from the keyboard and at larger text sizes (see [Keyboard shortcuts, interface zoom and cancelling](#keyboard-shortcuts-interface-zoom-and-cancelling)); validation results now say when they are out of date or could not run (with `Retry`), and findings can be filtered, copied and located in the XML (see [Validate The Invoice](#9-validate-the-invoice)).
-- Control outlines, XML comments and line numbers are easier to see, the selected tab and validation row are marked by a bar as well as a tint, the interface follows Windows High Contrast, and a finished validation moves focus to the verdict (see the same section). Screen readers can read the XML editors and name every summary, validation and Peppol value by its label, and when Peppol results are rebuilt, keyboard focus returns to the Seller/Buyer box, `Check` button or lookup control you used (while a lookup runs and that control is disabled, focus waits on the Peppol panel). The selected Seller/Buyer box is marked by a filled dot and a stronger edge, not only a tint.
+- Control outlines, XML comments and line numbers are easier to see, the selected tab and validation row are marked by a bar as well as a tint, the interface follows Windows High Contrast, and a finished validation moves focus to the verdict (see the same section). Screen readers can read the XML editors and name every summary, validation and Peppol value by its label, and when Peppol results are rebuilt, keyboard focus returns to the Seller/Buyer box, `Check` button or lookup control you used (while a lookup runs and that control is disabled, focus waits on the lookup's progress indicator, named `Checking Peppol participant information` or `Looking up the Peppol participant`). The selected Seller/Buyer box is marked by a filled dot and a stronger edge, not only a tint.
 - In a narrow window or at a large zoom, the `Validation` tab rearranges itself instead of cutting content off.
-- Production/Test marks tell a failed lookup (`!`) apart from one not yet run (`–`); hover over an environment to see its full result.
+- Production/Test show a drawn icon for each result, so a failed lookup (error circle) is told apart from one not yet run (minus circle); hover over an environment to see its full result. The Peppol overview states each conclusion in plain words led by an icon instead of emoji.
+- Toolbars wrap to a second row instead of cutting buttons off, and every icon grows with the interface zoom.
+- With a screen reader running, the outcome of opening, saving, converting, formatting, visualizing or a Peppol check is read from the status bar (press `Esc` to return to where you were), and the XML search result is the Find field's help and a `Tab` stop of its own.
 
 Version 1.1.0 upgraded the bundled validation and conversion libraries:
 
@@ -88,7 +100,7 @@ launch Peppol-utils from the Start menu or the optional desktop shortcut.
 For the universal JAR, put the jar in a folder you can find, for example
 `Downloads` or `Documents`. Open PowerShell in that folder and run:
 ```powershell
-java -jar .\peppol-utils-1.2.0.jar
+java -jar .\peppol-utils-1.3.0.jar
 ```
 
 ## 4. Open An Invoice
@@ -117,23 +129,27 @@ For a standalone XML invoice, the PDF tab is disabled and the XML/summary/valida
 | `Ctrl+O` | Open an invoice |
 | `Ctrl+S` | Save changes (when there are unsaved changes) |
 | `F5` or `Ctrl+Enter` | Validate the current XML |
-| `Ctrl+Tab` / `Ctrl+Shift+Tab` | Next / previous workbench tab |
-| `Ctrl+F` | Search in the XML editor (the invoice's, or a generated or converted tab's) |
+| `Ctrl+Tab` / `Ctrl+Shift+Tab` | Next / previous workbench tab (also from a field or value; focus moves to the tab header, as it does whenever the tab you were working in is left) |
+| `Ctrl+F` | Search in the XML editor (the invoice's, or a generated or converted tab's), also with focus on the tab strip or sidebar while that tab is shown |
 | `Ctrl+W` | Close the selected generated or converted XML tab (asks first when it has unsaved changes) |
 | `Ctrl+=` / `Ctrl+-` / `Ctrl+0` | Make the whole interface larger / smaller / back to 100% (80% to 160%, remembered between sessions) |
 | `Enter` / `Ctrl+C` in the findings table | Show the selected finding in the XML / copy it |
 | `Esc` | Cancel the running operation |
 | `Enter` / `Shift+Enter` in the Find field | Next / previous match (typing searches after a short pause) |
 
+Buttons, lists, tabs and the Seller/Buyer boxes show a focus outline only while you work with the keyboard; clicking one with the mouse does not leave an outline on it. Text fields always show where you are typing.
+
 The shortcuts are shown in the tooltips of `Open invoice`, `Save changes` and `Validate`, and a screen reader announces them as each command's help text. The row menu of the findings table lists its keys in the menu text (`Show in XML (Enter)`, `Copy finding (Ctrl+C)`); they only act in the table. They do nothing while the button they stand for is disabled. On macOS, `Ctrl` is `⌘`.
 
-While validation, opening, conversion, Flow 1 generation or visualization is running, a `Cancel` button (or `Esc`) appears under the progress indicator. It stops that operation's background worker, leaves your document and the previous results untouched, and reports `... cancelled.` in the status bar. Saving and repairing cannot be cancelled from there, because they must finish or restore the original file. While the progress overlay is shown, `Tab` stays on the `Cancel` button rather than moving to the controls behind it; `Ctrl+Tab` still switches tabs.
+While validation, opening, conversion, Flow 1 generation or visualization is running, a `Cancel` button (or `Esc`) appears under the progress indicator. It stops that operation's background worker, leaves your document and the previous results untouched, and reports `... cancelled.` in the status bar. Saving and repairing cannot be cancelled from there, because they must finish or restore the original file. While the progress overlay is shown, `Tab` stays on the `Cancel` button rather than moving to the controls behind it.
 
 While one of these operations runs, every XML editor (the invoice's and those of generated or converted documents) is read-only and `Ctrl+Tab` and `Ctrl+W` do nothing, so what is saved or validated is exactly what you see. `Format XML` also runs in the background now, so formatting a very large document no longer freezes the window, and editing a generated document stays responsive because its syntax colours refresh after a short pause.
 
 When a `Validate` run finishes and you have not moved to another tab or control in the meantime, keyboard focus moves to the verdict at the top of the `Validation` tab (for example `Validation failed`), so a screen reader reads the outcome. If you have switched away, focus is left where you put it.
 
-All pixel widths follow the interface zoom, including the conversion buttons, the Summary and Validation labels, the validation table columns and the About dialog. In a narrow window or at a large zoom the `Validation` tab rearranges itself instead of cutting content off: the details of the selected finding move under the table, `Repair PDF` moves under the verdict, the filters above the table wrap to their own row, the `Validation set` column is hidden (the set is still shown in the details and the filter), and the tab scrolls when the window is too short. When Windows High Contrast is on, the workbench uses your high-contrast colours instead of its own palette; the selected row, tab and finding stay marked by an underline or bar rather than by colour alone.
+With a screen reader running, the same happens for the other operations: when opening, saving, converting, formatting or visualizing finishes, or a Peppol check you started finishes while focus is still in its panel, focus moves to the status message at the bottom of the window so its outcome is read, and `Esc` returns focus to the control you started from. Read-only values (the Summary and Peppol values, the validation verdict and the status message) are `Tab` stops only while a screen reader is running; without one, `Tab` moves between controls only, and you can still click a value to select and copy it. In the XML Find field, the result (`Find result: 2 / 5`, `Find result: No matches`) is the field's help text, which a screen reader reads when the field takes focus or when you ask for the item's details; it is not spoken by itself as you type, so you can also `Tab` past `Previous`, `Next` and `Close` to the result.
+
+All pixel widths follow the interface zoom, including the conversion buttons, the Summary and Validation labels, the validation table columns and the About dialog. In a narrow window or at a large zoom the left sidebar shows only its icons, so the work area keeps its room; hover over an icon to see its command, and over the profile icon to see the current validation profile. The `Validation` tab also rearranges itself instead of cutting content off: the details of the selected finding move under the table, `Repair PDF` moves under the verdict, the filters above the table wrap to their own row, the `Validation set` column is hidden (the set is still shown in the details and the filter), and the tab scrolls when the window is too short. When Windows High Contrast is on, the workbench uses your high-contrast colours instead of its own palette; the selected row, tab and finding stay marked by an underline or bar rather than by colour alone.
 
 Dialogs that could lose work (`Save changes` over the original file, `Discard`, `Save anyway`, `Save unsigned test copy`, `Exit and cancel`) never take `Enter` as their default: `Enter` or `Esc` always chooses `Cancel` / `Keep working`. Failures show a short cause and what to try next; click `Show Details` for the full technical message.
 
@@ -198,10 +214,10 @@ To check publication status:
 1. Open the `Summary` tab.
 2. Review the detected seller and buyer electronic addresses and schemes.
 3. Click `Check Participant Information`.
-4. Review the separate `Production` and `Test` results.
+4. Review the separate `Production` and `Test` results. When the check finishes, the status bar sums them up, for example `Peppol check finished. Seller: Production registered, Test registered. Buyer: Production not registered, Test registered.`
 5. Review the invoice-type badge in each Production and Test row, then expand a result to inspect the discovery details. These can include the SML DNS zone, SMP URL, a selected Billing Invoice access point (active when available, otherwise the earliest future or another inactive endpoint), Document Type details, and optional Business Card company names, country, and registration date when the SMP provides them. Document Type details are collapsed by default; expand one to see its blue bold name, scheme and identifier/value, plus each matching process pair in its own card with service activation, expiry, and lifecycle status. The collapsed `SMP` header shows the SMP URL; expand it to inspect the signing certificate details embedded in validated SMP XML signatures (subject, issuer, serial, validity, key, and certificate signature algorithm) when available. This is distinct from both the SMP server TLS certificate and the AP endpoint certificate. The collapsed `Access Point` header shows the selected endpoint URL and lifecycle status; expand it under `SMP & AP` to inspect the transport, URL, service, contact, certificate, activation, expiry, and status metadata once for the lookup result when the SMP supplies it. A `Not yet active` endpoint is published metadata, not a currently usable route. The certificate fields describe the AP endpoint certificate published in SMP service metadata; the SMP server TLS certificate is not captured. Click `Refresh` to bypass the short-lived cache and run the checks again.
 
-Production and Test are checked independently. The Peppol overview reports two separate conclusions: document-type publication (`published by SMP`, `not published by SMP`, or `publication unknown`) and advertised process/endpoint metadata (`active AS4 v2 endpoint metadata available`, `active endpoint metadata available; choose a process`, `no matching active endpoint metadata`, or `process/endpoint unresolved`). Document publication uses the exact Peppol document type identifier first (case-sensitive scheme and value), then the standard Peppol Wildcard Scheme. An exact same-scheme/value registration takes precedence; otherwise the selector chooses the wildcard with the greatest number of matching CustomizationID parts. A published document type is not by itself proof that a requested process can be delivered; an active metadata row is not an AS4 reachability test.
+Production and Test are checked independently. The Peppol overview reports two separate conclusions: document-type publication (`Published by SMP`, `Not published by SMP`, or `Publication unknown`) and advertised process/endpoint metadata (`Active AS4 v2 endpoint metadata available`, `Active AS4 v2 endpoint metadata available; choose a process`, `No matching active endpoint`, or `Process and endpoint unresolved`). Each conclusion starts with an icon: a check when supported, a warning triangle when not, a clock while checking and an info circle when it needs your choice or could not be resolved. Document publication uses the exact Peppol document type identifier first (case-sensitive scheme and value), then the standard Peppol Wildcard Scheme. An exact same-scheme/value registration takes precedence; otherwise the selector chooses the wildcard with the greatest number of matching CustomizationID parts. A published document type is not by itself proof that a requested process can be delivered; an active metadata row is not an AS4 reachability test.
 
 For a recognized Factur-X hybrid PDF with explicit France CTC buyer routing (`schemeID=0225`), the comparison uses the French `pdf+xml` Factur-X transport type, not the embedded CII XML type. The embedded XML remains the source for invoice data and validation. A recognized Factur-X PDF without that routing context remains unresolved; the embedded CII type is never used as a fallback. Standalone XML carries its raw DDD BT-23/ProfileID process into the comparison, and a value that is not an exact member of the matched DTI's allowed process set is rejected. A Factur-X PDF's embedded BusinessProcess value is not treated as its Peppol transport process, so only that PDF case leaves process selection unresolved and exposes the allowed active processes advertised for the matched PDF registration instead. Test support does not imply Production support.
 
@@ -209,7 +225,7 @@ For a recognized Factur-X hybrid PDF with explicit France CTC buyer routing (`sc
 
 *Peppol participant information in the Summary tab. Production and Test are reported independently; this example shows a participant registered in Test but not in Production, with the invoice type unsupported in both environments.*
 
-Registration and invoice-type support are separate results. A participant can be registered while not publishing the exact document type required by the open invoice. Possible registration results are registered, not registered, and lookup failed. Each Production/Test option shows a mark: `✓` registered, `⚠` not registered, `!` lookup failed, `–` not checked yet and `…` while checking; hover over it to see the full result. A missing address, missing or invalid `schemeID`, email address, or non-registrable scheme is explained without sending a lookup.
+Registration and invoice-type support are separate results. A participant can be registered while not publishing the exact document type required by the open invoice. Possible registration results are registered, not registered, and lookup failed. Each Production/Test option shows an icon: a green check when registered, an amber warning triangle when not registered, a grey error circle when the lookup failed, a grey minus circle when not checked yet and a clock while checking; hover over it to see the full result. The icons grow with the interface zoom. Editing the invoice keeps the Peppol results as long as the seller and buyer electronic addresses, document type and process stay the same. A missing address, missing or invalid `schemeID`, email address, or non-registrable scheme is explained without sending a lookup.
 
 Peppol lookup requires internet access. It queries Peppol SML/SMP discovery services only when you explicitly run a lookup; opening and validating an invoice do not automatically contact the network. A Peppol result describes discovery metadata at the time of the check and is not a guarantee that a future document transmission will succeed.
 
@@ -219,7 +235,7 @@ Use `Utilities` > `Peppol lookup` in the left sidebar when the participant is no
 
 1. Enter an identifier such as `0225:152857363`. The full `iso6523-actorid-upis::0225:152857363` form is also accepted.
 2. Click `Look up participant` or press Enter.
-3. Review the separate Production and Test results below the search box.
+3. Review the separate Production and Test results below the search box. The status bar sums them up when the lookup finishes (`Peppol lookup of 0225:152857363 finished: Production registered, Test not registered.`).
 4. Expand the environment details to inspect its SML/SMP source, the collapsed SMP panel with signing certificate details from validated XML signatures, Document Type details, the collapsed Access Point panel with the selected Billing Invoice endpoint URL, lifecycle status, and metadata, and optional Business Card. SMP signing certificates, AP endpoint certificates, and the SMP server TLS certificate are distinct; the TLS peer certificate is not captured.
 
 The identifier is checked locally before any request is sent. Each lookup is user initiated, Production and Test stay independent, and a network failure remains distinct from a participant that is not registered.
@@ -387,7 +403,7 @@ java -version
 Run it from PowerShell so you can see the error:
 
 ```powershell
-java -jar .\peppol-utils-1.2.0.jar
+java -jar .\peppol-utils-1.3.0.jar
 ```
 
 Check that:
