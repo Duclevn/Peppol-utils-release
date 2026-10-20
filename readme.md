@@ -1,8 +1,8 @@
-# Peppol-utils 1.4.0 End-User Guide
+# Peppol-utils 1.4.1 End-User Guide
 
 ## Table Of Contents
 
-- [What's New In 1.4.0](#whats-new-in-140)
+- [What's New In 1.4.1](#whats-new-in-141)
 
 **Getting started**
 
@@ -28,9 +28,17 @@
 14. [Troubleshooting](#14-troubleshooting)
 15. [Safe Use Recommendation](#15-safe-use-recommendation)
 
-## What's New In 1.4.0
+## What's New In 1.4.1
 
-This guide applies to the `peppol-utils-1.4.0.jar` desktop app. Version 1.4.0 moves the app to Java 25 and refreshes the workbench. Validation rules and conversion are unchanged from 1.3.1.
+This guide applies to the `peppol-utils-1.4.1.jar` desktop app. Version 1.4.1 fixes Peppol lookups in the Windows installer and makes the downloads smaller. Validation rules, conversion and the app's screens are unchanged from 1.4.0.
+
+- In the app installed with the 1.4.0 Windows installer, every Peppol lookup failed with a network error. The 1.4.1 installer fixes this. The universal JAR was not affected.
+- The Windows installer is about half the size (about 49 MB instead of 96 MB). The installed app takes about 360 MB on disk.
+- The JAR is about 4 MB smaller because it no longer contains old validation rule versions that the app never uses.
+
+### Changes in 1.4.0
+
+Version 1.4.0 moved the app to Java 25 and refreshed the workbench. Validation rules and conversion were unchanged from 1.3.1.
 
 - The JAR now needs Java 25; Java 21 can no longer start it (see [Install Java](#2-install-java)). The Windows installer is a 64-bit setup for x64 Windows and still includes its own Java runtime, so nothing extra needs installing.
 - The `Conversion` screen shows its actions as cards in two groups, `Convert syntax` and `Generate a document`. Each card shows its route, such as `UBL → CII`, and a card that cannot run for the open XML says why (see [Convert Between UBL And CII](#11-convert-between-ubl-and-cii)).
@@ -121,7 +129,7 @@ launch Peppol-utils from the Start menu or the optional desktop shortcut.
 For the universal JAR, put the jar in a folder you can find, for example
 `Downloads` or `Documents`. Open PowerShell in that folder and run:
 ```powershell
-java -jar .\peppol-utils-1.4.0.jar
+java -jar .\peppol-utils-1.4.1.jar
 ```
 
 ## 4. Open An Invoice
@@ -434,7 +442,7 @@ java -version
 Run it from PowerShell so you can see the error:
 
 ```powershell
-java -jar .\peppol-utils-1.4.0.jar
+java -jar .\peppol-utils-1.4.1.jar
 ```
 
 Check that:
