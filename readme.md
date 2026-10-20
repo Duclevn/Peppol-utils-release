@@ -1,8 +1,8 @@
-# Peppol-utils 1.3.1 End-User Guide
+# Peppol-utils 1.4.0 End-User Guide
 
 ## Table Of Contents
 
-- [What's New In 1.3.1](#whats-new-in-131)
+- [What's New In 1.4.0](#whats-new-in-140)
 
 **Getting started**
 
@@ -28,9 +28,19 @@
 14. [Troubleshooting](#14-troubleshooting)
 15. [Safe Use Recommendation](#15-safe-use-recommendation)
 
-## What's New In 1.3.1
+## What's New In 1.4.0
 
-This guide applies to the `peppol-utils-1.3.1.jar` desktop app. Version 1.3.1 fixes problems found after 1.3.0. Validation rules and conversion are unchanged.
+This guide applies to the `peppol-utils-1.4.0.jar` desktop app. Version 1.4.0 moves the app to Java 25 and refreshes the workbench. Validation rules and conversion are unchanged from 1.3.1.
+
+- The JAR now needs Java 25; Java 21 can no longer start it (see [Install Java](#2-install-java)). The Windows installer is a 64-bit setup for x64 Windows and still includes its own Java runtime, so nothing extra needs installing.
+- The `Conversion` screen shows its actions as cards in two groups, `Convert syntax` and `Generate a document`. Each card shows its route, such as `UBL → CII`, and a card that cannot run for the open XML says why (see [Convert Between UBL And CII](#11-convert-between-ubl-and-cii)).
+- Only one sidebar command is amber at a time: `Open invoice` until an invoice is open, then `Validate`.
+- The selected tab is underlined, the Peppol detail tabs look like a segmented switch, and the PDF, preview and XML editor page and zoom controls use arrow and magnifier icons.
+- In validation results, a description no longer repeats the rule ID shown in the `Rule` column, the `Set` column is hidden when a report has a single validation set, and the profile selector sits directly under `Validation` in the sidebar.
+
+### Changes in 1.3.1
+
+Version 1.3.1 fixed problems found after 1.3.0. Validation rules and conversion are unchanged.
 
 - `Visualize` and `XML to PDF` work even if you have not opened the `Visualize invoice` tab yet. An unexpected failure now says so in plain words.
 - Converted or generated XML is marked `Unsaved` until you save it, and closing the app or opening another invoice asks before discarding it. The status bar shows the state of the tab you are looking at.
@@ -95,9 +105,9 @@ Users do not need Maven or the source code.
 
 ## 2. Install Java
 
-When using the JAR, Peppol-utils requires Java 21. The Windows installer already includes the required runtime, so Windows users do not need a separate Java, JRE, or JDK installation for that package.
+When using the JAR, Peppol-utils requires Java 25. Java 21 can no longer start the desktop JAR. The Windows installer already includes the required runtime, so Windows users do not need a separate Java, JRE, or JDK installation for that package.
 
-Install a Java 21 runtime or JDK from a vendor you trust. JavaFX is bundled with the application; the universal JAR selects the matching native files for its supported operating system and CPU architecture.
+Install a Java 25 runtime or JDK from a vendor you trust. JavaFX is bundled with the application; the universal JAR selects the matching native files for its supported operating system and CPU architecture.
 
 Recommended download page:
 - Oracle Java downloads: https://www.oracle.com/java/technologies/downloads/
@@ -111,7 +121,7 @@ launch Peppol-utils from the Start menu or the optional desktop shortcut.
 For the universal JAR, put the jar in a folder you can find, for example
 `Downloads` or `Documents`. Open PowerShell in that folder and run:
 ```powershell
-java -jar .\peppol-utils-1.3.1.jar
+java -jar .\peppol-utils-1.4.0.jar
 ```
 
 ## 4. Open An Invoice
@@ -129,7 +139,7 @@ For a PDF invoice, the app shows:
 - `Summary`: main invoice fields such as invoice number, seller, buyer, totals, profile, and VESID.
 - `PDF`: a rendered preview of the PDF pages.
 - `XML`: the embedded Factur-X XML that can be edited.
-- `Conversion`: UBL-to-CII, CII-to-UBL, and XML-to-PDF actions for the current editor content.
+- `Conversion`: UBL-to-CII, CII-to-UBL, XML-to-PDF and France CTC Flow 1 actions for the current editor content.
 - `Visualize invoice`: a generated invoice preview from the XML.
 - `Validation`: validation messages and warnings.
 
@@ -190,8 +200,8 @@ Open the `PDF` tab.
 
 Use:
 
-- `<` and `>` (`Previous page` / `Next page`) to move between pages.
-- `-` and `+` (`Zoom out` / `Zoom in`) to change the page size.
+- The arrow buttons (`Previous page` / `Next page`) to move between pages.
+- The magnifier buttons (`Zoom out` / `Zoom in`) to change the page size.
 - The scrollbars to move around the page when it is larger than the view.
 
 The PDF page is centered in the view with padding around it. The PDF tab is only available when the opened invoice is a PDF.
@@ -205,7 +215,7 @@ Available actions:
 - Edit the XML directly in the editor.
 - Click `Format XML` to pretty-print the XML.
 - Click `Copy XML` to copy the whole XML to the clipboard.
-- Use the `-` and `+` controls to adjust XML editor text size from 75% to 200%.
+- Use the magnifier buttons (`Zoom out` / `Zoom in`) to adjust XML editor text size from 75% to 200%.
 - Press `Ctrl+F` to search in the XML.
 - Use `Previous`, `Next`, and `Close` in the search bar. In a narrow window or at a large interface zoom they move below the search field.
 - Click `Visualize` to generate a PDF preview from the current XML.
@@ -228,7 +238,7 @@ To check publication status:
 
 1. Open the `Summary` tab.
 2. Review the detected seller and buyer electronic addresses and schemes.
-3. Click `Check Participant Information`.
+3. Click `Check participant information`.
 4. Review the separate `Production` and `Test` results. When the check finishes, the status bar sums them up, for example `Peppol check finished. Seller: Production registered, Test registered. Buyer: Production not registered, Test registered.`
 5. Review the invoice-type badge in each Production and Test row, then expand a result to inspect the discovery details. These can include the SML DNS zone, SMP URL, a selected Billing Invoice access point (active when available, otherwise the earliest future or another inactive endpoint), Document Type details, and optional Business Card company names, country, and registration date when the SMP provides them. Document Type details are collapsed by default; expand one to see its blue bold name, scheme and identifier/value, plus each matching process pair in its own card with service activation, expiry, and lifecycle status. The collapsed `SMP` header shows the SMP URL; expand it to inspect the signing certificate details embedded in validated SMP XML signatures (subject, issuer, serial, validity, key, and certificate signature algorithm) when available. This is distinct from both the SMP server TLS certificate and the AP endpoint certificate. The collapsed `Access Point` header shows the selected endpoint URL and lifecycle status; expand it under `SMP & AP` to inspect the transport, URL, service, contact, certificate, activation, expiry, and status metadata once for the lookup result when the SMP supplies it. A `Not yet active` endpoint is published metadata, not a currently usable route. The certificate fields describe the AP endpoint certificate published in SMP service metadata; the SMP server TLS certificate is not captured. Click `Refresh` to bypass the short-lived cache and run the checks again.
 
@@ -257,7 +267,7 @@ The identifier is checked locally before any request is sent. Each lookup is use
 
 ## 9. Validate The Invoice
 
-Choose the `Validation profile` in the left sidebar:
+Choose the validation profile in the selector under `Validation` in the left sidebar:
 
 - `Default`: general Factur-X / EN 16931 validation.
 - `France CTC`: Flux 1 and Flux 10 use the Helger phive rule sets automatically. Flux 1 CII/UBL selects the Base/Démarrage or Full/Cible VESID from BT-24/CustomizationID, while the namespace-less Flux 10 `<Report>` selects the latest bundled `fr.ctc.flux10:report` set (1.1). Other documents first validate the exact detected invoice schema/profile VESID, then run the legacy 1.3.1 and latest bundled France CTC rule sets for CII/UBL EN 16931, CII/UBL Extended, UBL CreditNote, Factur-X, or CDAR. Factur-X BASIC WL, EN 16931, and EXTENDED use the dedicated France CTC Factur-X rule sets. The legacy set is skipped if it is not bundled.
@@ -312,8 +322,8 @@ The app generates a PDF preview from the current XML and opens the `Visualize in
 
 Use:
 
-- `<` and `>` (`Previous page` / `Next page`) to move between generated preview pages.
-- `-` and `+` (`Zoom out` / `Zoom in`) to change the page size.
+- The arrow buttons (`Previous page` / `Next page`) to move between generated preview pages.
+- The magnifier buttons (`Zoom out` / `Zoom in`) to change the page size.
 - `Save as...` to export the generated PDF visualization.
 - The scrollbars to move around pages larger than the view.
 
@@ -323,12 +333,16 @@ This preview helps you inspect how the XML invoice content could look as a reada
 
 Select `Conversion` in the left sidebar (or its tab; the sidebar button is highlighted while that tab is showing). The screen uses the current XML editor content, including unsaved edits.
 
-- Click `UBL to CII` for a UBL 2.1 Invoice or CreditNote. The app opens a `Converted CII` tab.
-- Click `CII to UBL` for CII / Factur-X XML. The app opens a `Converted UBL` tab.
-- Click `XML to PDF` to open a generated preview in the `Visualize invoice` tab.
-- Click `France CTC Flow 1` to generate a France CTC Flow 1 XML document from supported CII or UBL input.
+Each action is a card that shows its route (for example `UBL → CII`) and what it produces. The cards are in two groups. Click a card to run it:
 
-Each syntax-conversion button is enabled only when the current XML has the matching input syntax. CII input can be:
+- **Convert syntax**
+  - `UBL → CII` for a UBL 2.1 Invoice or CreditNote. The app opens a `Converted CII` tab.
+  - `CII → UBL` for CII / Factur-X XML. The app opens a `Converted UBL` tab.
+- **Generate a document**
+  - `XML → PDF` opens a generated preview in the `Visualize invoice` tab.
+  - `XML → Flow 1` (with the French flag) generates France CTC Flow 1 XML from supported CII or UBL input.
+
+A card that cannot run for the open XML is greyed out and says why, for example `The open XML is CII. Available when the XML is UBL.` or `Not available for a CDAR message.` Before an invoice is open, the screen says `Open an invoice to use these actions.` Each syntax conversion runs only when the current XML has the matching input syntax. CII input can be:
 
 - A standalone `.xml` file using CII syntax.
 - A Factur-X PDF whose embedded invoice XML is CII.
@@ -354,7 +368,7 @@ For France CTC compatibility, the app also cleans up converted UBL identifiers t
 
 ## 12. Generate France CTC Flow 1 XML
 
-Open any supported CII or UBL invoice, then select `Conversion` and click `France CTC Flow 1`.
+Open any supported CII or UBL invoice, then select `Conversion` and click the `XML → Flow 1` card.
 
 1. Choose `Base` or `Full`. `Base` is selected by default. The dialog explains each: `Base` has the mandatory Flow 1 fields only, and `Full` the Base fields plus the additional Flow 1 fields.
 2. For ordinary invoices, choose the applicable France CTC billing framework (BT-23) from the required list.
@@ -406,7 +420,7 @@ Java is not installed or the terminal was opened before Java was installed.
 
 Fix:
 
-1. Install Java 21.
+1. Install Java 25.
 2. Close PowerShell or Command Prompt.
 3. Open a new PowerShell or Command Prompt window.
 4. Run:
@@ -420,12 +434,12 @@ java -version
 Run it from PowerShell so you can see the error:
 
 ```powershell
-java -jar .\peppol-utils-1.3.1.jar
+java -jar .\peppol-utils-1.4.0.jar
 ```
 
 Check that:
 
-- Java version is `21`.
+- Java version is `25`.
 - The jar file was fully downloaded.
 - The jar was built for your operating system and CPU architecture.
 
@@ -440,10 +454,10 @@ uname -m
 ```
 
 The released universal JAR contains both macOS native payloads. Keep using that
-same JAR, and install a Java 21 runtime whose architecture matches the Mac:
+same JAR, and install a Java 25 runtime whose architecture matches the Mac:
 
-- `arm64`: Apple Silicon / M-series Mac, including M1, M2, M3, M4, and M5. Use an arm64 Java 21 runtime.
-- `x86_64`: Intel Mac. Use an x64 Java 21 runtime.
+- `arm64`: Apple Silicon / M-series Mac, including M1, M2, M3, M4, and M5. Use an arm64 Java 25 runtime.
+- `x86_64`: Intel Mac. Use an x64 Java 25 runtime.
 
 Platform-specific JavaFX JARs may exist in developer builds, but are not part of
 the universal release distribution.
