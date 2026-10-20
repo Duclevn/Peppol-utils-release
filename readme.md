@@ -1,8 +1,8 @@
-# Peppol-utils 1.3.0 End-User Guide
+# Peppol-utils 1.3.1 End-User Guide
 
 ## Table Of Contents
 
-- [What's New In 1.3.0](#whats-new-in-130)
+- [What's New In 1.3.1](#whats-new-in-131)
 
 **Getting started**
 
@@ -28,9 +28,20 @@
 14. [Troubleshooting](#14-troubleshooting)
 15. [Safe Use Recommendation](#15-safe-use-recommendation)
 
-## What's New In 1.3.0
+## What's New In 1.3.1
 
-This guide applies to the `peppol-utils-1.3.0.jar` desktop app. Version 1.3.0 polishes the workbench after 1.2.0. Invoice handling, validation rules and conversion are unchanged.
+This guide applies to the `peppol-utils-1.3.1.jar` desktop app. Version 1.3.1 fixes problems found after 1.3.0. Validation rules and conversion are unchanged.
+
+- `Visualize` and `XML to PDF` work even if you have not opened the `Visualize invoice` tab yet. An unexpected failure now says so in plain words.
+- Converted or generated XML is marked `Unsaved` until you save it, and closing the app or opening another invoice asks before discarding it. The status bar shows the state of the tab you are looking at.
+- The app starts on a `No invoice open` screen with an `Open invoice` button, and the status bar no longer says work is running after it has stopped or was cancelled.
+- After validation the findings fill the space under the verdict; the invoice syntax, profile and VESID are in a section you can expand. In a narrow window the XML find bar moves its buttons to a second row instead of cutting them off.
+- The France CTC Flow 1 dialog explains `Base`, `Full` and the BT-23 billing framework codes. `XML to PDF` is no longer coloured like an error.
+- For UBL invoices the Summary's grand total is the total including tax, and the amount due stays the payable amount. Saving is safer: if a backup copy could not be completed, the original invoice is never replaced by it, and `Save as` uses the same backup-and-restore as saving in place.
+
+### Changes in 1.3.0
+
+Version 1.3.0 polished the workbench after 1.2.0. Invoice handling, validation rules and conversion are unchanged from 1.2.0.
 
 - In a narrow window or at a large zoom the left sidebar shows only its icons; hover over one to see its command.
 - Focus outlines appear only while you work with the keyboard, so clicking a button no longer leaves an outline on it.
@@ -100,10 +111,12 @@ launch Peppol-utils from the Start menu or the optional desktop shortcut.
 For the universal JAR, put the jar in a folder you can find, for example
 `Downloads` or `Documents`. Open PowerShell in that folder and run:
 ```powershell
-java -jar .\peppol-utils-1.3.0.jar
+java -jar .\peppol-utils-1.3.1.jar
 ```
 
 ## 4. Open An Invoice
+
+Until an invoice is open, `Summary` shows `No invoice open` with its own `Open invoice` button instead of empty invoice fields.
 
 1. Click `Open invoice`.
 2. Choose one of these file types:
@@ -194,7 +207,7 @@ Available actions:
 - Click `Copy XML` to copy the whole XML to the clipboard.
 - Use the `-` and `+` controls to adjust XML editor text size from 75% to 200%.
 - Press `Ctrl+F` to search in the XML.
-- Use `Previous`, `Next`, and `Close` in the search bar.
+- Use `Previous`, `Next`, and `Close` in the search bar. In a narrow window or at a large interface zoom they move below the search field.
 - Click `Visualize` to generate a PDF preview from the current XML.
 - Click `Save as...` to write the current invoice to a new PDF or XML file without first choosing the overwrite/save-copy dialog.
 - Use the editor scrollbars to move vertically or horizontally through long XML files.
@@ -203,7 +216,9 @@ When you edit the XML, the app marks the invoice as `Unsaved`.
 
 A screen reader reads the editor as a text area named `Invoice XML`: it can read the XML line by line, follow the caret and announce selected text. `Show in XML` also states the line and column in the status bar.
 
-Generated and converted XML tabs have the same editor (named after the tab, for example `Converted UBL XML`), the same text-size controls, `Copy XML` and `Ctrl+F` search, plus a `Close tab` button. `Close tab`, `Ctrl+W` and the tab's own close button all ask before discarding unsaved changes.
+Generated and converted XML tabs have the same editor (named after the tab, for example `Converted UBL XML`), the same text-size controls, `Copy XML` and `Ctrl+F` search, plus a `Close tab` button. A generated or converted document counts as `Unsaved` (with `*` after its tab name) until you save it with `Save as...`, and again after any later edit. `Close tab`, `Ctrl+W`, the tab's own close button, opening another invoice and exiting all ask before discarding it.
+
+The `Saved` / `Unsaved` pill at the right of the status bar describes the selected document: a generated or converted tab's own state while that tab is selected, otherwise the opened invoice's.
 
 ## 8. Check Peppol Participant Information
 
@@ -251,7 +266,7 @@ Click `Validate`.
 
 For a saved Factur-X PDF, the default validation covers the complete hybrid document: Kaltblut checks the Factur-X/ZUGFeRD BR-HYBRID container and XMP rules, veraPDF checks PDF/A-3 conformance, and DDD/phive check the embedded XML schema and business rules. PDF/A findings include the veraPDF rule and PDF object location. Container and XMP checks also run when `France CTC` is selected, alongside that profile's XML validation route.
 
-Before validation is run, the `Validation` tab says `Not validated yet`; opening an invoice does not imply that it passed. The header repeats the detected XML syntax, profile, guideline, and VESID from Summary for quick reference.
+Before validation is run, the `Validation` tab says `Not validated yet`; opening an invoice does not imply that it passed. Below the verdict, the collapsed `Invoice syntax, profile and VESID` section repeats the detected XML syntax, profile, guideline, and VESID from Summary; expand it when you need them, so the findings keep the space under the verdict.
 
 After validation, the headline gives the overall result: `Validation passed`, `Validation passed with warnings`, or `Validation failed`. It names the validation set when only one set is responsible, or the number of sets otherwise. The line under it reads `Profile: <profile> · Ran: <sets>` and lists each validation set that reported findings as passed, passed with warnings, or failed (for example `Invoice profile rules — failed (1 error)`). The validators do not report which rule sets executed, so a set that produced no findings at all is not listed; the line never claims a set ran when it reported nothing. Passed checks and profile-detection messages are not listed as rows.
 
@@ -341,8 +356,10 @@ For France CTC compatibility, the app also cleans up converted UBL identifiers t
 
 Open any supported CII or UBL invoice, then select `Conversion` and click `France CTC Flow 1`.
 
-1. Choose `Base` or `Full`. `Base` is selected by default.
+1. Choose `Base` or `Full`. `Base` is selected by default. The dialog explains each: `Base` has the mandatory Flow 1 fields only, and `Full` the Base fields plus the additional Flow 1 fields.
 2. For ordinary invoices, choose the applicable France CTC billing framework (BT-23) from the required list.
+   The code's letter says what is billed (B goods, S services, M both) and its number the case
+   (1 ordinary, 2 already paid, 4 final after a deposit, 5 subcontractor, 6 co-contractor, 7 already e-reported).
    The app does not guess a framework when the source does not contain one. For B8/S8/M8
    and B9/S9/M9 source invoices, the generated split documents keep their per-unit
    billing frameworks from the source invoice; no framework selection is required.
@@ -403,7 +420,7 @@ java -version
 Run it from PowerShell so you can see the error:
 
 ```powershell
-java -jar .\peppol-utils-1.3.0.jar
+java -jar .\peppol-utils-1.3.1.jar
 ```
 
 Check that:
