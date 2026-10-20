@@ -1,8 +1,8 @@
-# Peppol-utils 1.4.1 End-User Guide
+# Peppol-utils 1.5.0 End-User Guide
 
 ## Table Of Contents
 
-- [What's New In 1.4.1](#whats-new-in-141)
+- [What's New In 1.5.0](#whats-new-in-150)
 
 **Getting started**
 
@@ -28,9 +28,18 @@
 14. [Troubleshooting](#14-troubleshooting)
 15. [Safe Use Recommendation](#15-safe-use-recommendation)
 
-## What's New In 1.4.1
+## What's New In 1.5.0
 
-This guide applies to the `peppol-utils-1.4.1.jar` desktop app. Version 1.4.1 fixes Peppol lookups in the Windows installer and makes the downloads smaller. Validation rules, conversion and the app's screens are unchanged from 1.4.0.
+This guide applies to the `peppol-utils-1.5.0.jar` desktop app. Version 1.5.0 makes the app use much less memory. Validation rules, conversion and the app's screens are unchanged from 1.4.1.
+
+- With an XML invoice open, visualized, validated and checked on Peppol, the app uses about a third less memory than 1.4.1 (about 217 MB instead of about 317 MB in our measurement).
+- Every Peppol check now asks the Peppol network again. Earlier versions could show a remembered result for up to 15 minutes. A check runs in a separate short-lived process that receives only the participant identifiers, never the invoice.
+- Saving an edited XML invoice validates it once instead of twice.
+- The `PDF` and `Visualize invoice` tabs draw their page again when you come back to them, instead of keeping the page image in memory while another tab is shown.
+
+### Changes in 1.4.1
+
+Version 1.4.1 fixed Peppol lookups in the Windows installer and made the downloads smaller. Validation rules, conversion and the app's screens were unchanged from 1.4.0.
 
 - In the app installed with the 1.4.0 Windows installer, every Peppol lookup failed with a network error. The 1.4.1 installer fixes this. The universal JAR was not affected.
 - The Windows installer is about half the size (about 49 MB instead of 96 MB). The installed app takes about 360 MB on disk.
@@ -129,7 +138,7 @@ launch Peppol-utils from the Start menu or the optional desktop shortcut.
 For the universal JAR, put the jar in a folder you can find, for example
 `Downloads` or `Documents`. Open PowerShell in that folder and run:
 ```powershell
-java -jar .\peppol-utils-1.4.1.jar
+java -jar .\peppol-utils-1.5.0.jar
 ```
 
 ## 4. Open An Invoice
@@ -442,7 +451,7 @@ java -version
 Run it from PowerShell so you can see the error:
 
 ```powershell
-java -jar .\peppol-utils-1.4.1.jar
+java -jar .\peppol-utils-1.5.0.jar
 ```
 
 Check that:
