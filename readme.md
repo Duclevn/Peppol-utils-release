@@ -1,8 +1,8 @@
-# Peppol-utils 1.5.0 End-User Guide
+# Peppol-utils 1.6.0 End-User Guide
 
 ## Table Of Contents
 
-- [What's New In 1.5.0](#whats-new-in-150)
+- [What's New In 1.6.0](#whats-new-in-160)
 
 **Getting started**
 
@@ -28,12 +28,21 @@
 14. [Troubleshooting](#14-troubleshooting)
 15. [Safe Use Recommendation](#15-safe-use-recommendation)
 
-## What's New In 1.5.0
+## What's New In 1.6.0
 
-This guide applies to the `peppol-utils-1.5.0.jar` desktop app. Version 1.5.0 makes the app use much less memory. Validation rules, conversion and the app's screens are unchanged from 1.4.1.
+This guide applies to the `peppol-utils-1.6.0.jar` desktop app and the 1.6.0 Windows installer. In the installed Windows app, validation, conversion and visualization are faster: in our measurement, validating an XML invoice took about 1.1 s instead of 2.9 s, and visualizing it about 1.9 s instead of 3.3 s. Peppol checks still take as long as the network needs. Validation rules, conversion and the app's screens are unchanged from 1.5.0.
 
-- With an XML invoice open, visualized, validated and checked on Peppol, the app uses about a third less memory than 1.4.1 (about 217 MB instead of about 317 MB in our measurement).
-- Every Peppol check now asks the Peppol network again. Earlier versions could show a remembered result for up to 15 minutes. A check runs in a separate short-lived process that receives only the participant identifiers, never the invoice.
+- The Windows installer now includes `peppol-utils-worker.exe`, a native program that does the app's heavy work in place of a Java process. It gives the same results with less memory. If your security software blocks it, the app falls back to the Java version automatically. The universal JAR still runs that work in Java, so it is not faster, but it has the other changes below.
+- The installer is bigger: about 91 MB instead of 49 MB, and the installed app takes about 586 MB on disk instead of about 360 MB.
+- The first Peppol check after installing may show a Windows Firewall prompt for `peppol-utils-worker.exe`. See [Troubleshooting](#windows-firewall-asks-about-peppol-utils-workerexe).
+- A very large validation report is now shortened instead of failing. Fatal errors and errors are shown first, and the last row says how many findings of each kind were left out. See [Validate The Invoice](#9-validate-the-invoice).
+
+### Changes in 1.5.0
+
+Version 1.5.0 made the app use much less memory. Validation rules, conversion and the app's screens were unchanged from 1.4.1.
+
+- With an XML invoice open, visualized, validated and checked on Peppol, the app used about a third less memory than 1.4.1 (about 217 MB instead of about 317 MB in our measurement).
+- Every Peppol check asks the Peppol network again. Earlier versions could show a remembered result for up to 15 minutes. A check runs in a separate short-lived process that receives only the participant identifiers, never the invoice.
 - Saving an edited XML invoice validates it once instead of twice.
 - The `PDF` and `Visualize invoice` tabs draw their page again when you come back to them, instead of keeping the page image in memory while another tab is shown.
 
@@ -138,7 +147,7 @@ launch Peppol-utils from the Start menu or the optional desktop shortcut.
 For the universal JAR, put the jar in a folder you can find, for example
 `Downloads` or `Documents`. Open PowerShell in that folder and run:
 ```powershell
-java -jar .\peppol-utils-1.5.0.jar
+java -jar .\peppol-utils-1.6.0.jar
 ```
 
 ## 4. Open An Invoice
@@ -319,6 +328,8 @@ Two situations never look like a normal result:
 - **Results out of date.** If you edit the XML or change the validation profile after a run, the headline turns neutral and reads `Results out of date — XML changed` (or `— validation profile changed`) and the table is dimmed. Nothing is re-evaluated until you click `Validate` again. Opening a CDAR message switches the profile to `France CTC` automatically and says so in the status bar.
 - **Validation could not run.** If the validator itself fails (for example its worker process cannot start), the tab shows `Validation could not run` with the cause and a `Retry validation` button. The earlier report is cleared, so it cannot be mistaken for a verdict on the current XML.
 
+A very large report (more than 20,000 findings, or thousands of very long ones) is shortened so it fits the app's 8 MiB limit for worker results. Fatal errors and errors are kept first, then warnings, in their original order. The last row has the rule code `WORKER-REPORT-TRIMMED` and says how many findings of each severity were left out. That row takes the most severe level among the omitted findings, so a shortened report that omits errors still fails and still blocks a strict save. The CLI and the core API always return the full report.
+
 If there are no errors or warnings, the table says so. Findings are grouped under user-facing validation set names: `Invoice profile rules` (the detected schema/profile VESID, run by phive), `FR CTC` (the latest bundled France CTC version), `FR CTC old` (the legacy 1.3.1 set), and `Factur-X PDF container`; engine names such as PHIVE and Kaltblut stay in the technical details. Both France CTC versions run when 1.3.1 is available in Helger phive; if a future dependency release removes it, only the latest set runs. Warnings remain non-blocking; validator execution failures and error/fatal assertions block strict saving.
 
 Flux 1 trajectory selection uses `urn.cpro.gouv.fr:1p0:einvoicingextract#Base` for Démarrage and `...#Full` for Cible. The service reports the latest bundled `fr.ctc.flux1:*` VESID (currently 1.1) in the ordinary PHIVE validation set. Generated Flow 1 output still applies the field catalog and temporary operational mapping before running the same phive-backed completeness check.
@@ -451,7 +462,7 @@ java -version
 Run it from PowerShell so you can see the error:
 
 ```powershell
-java -jar .\peppol-utils-1.5.0.jar
+java -jar .\peppol-utils-1.6.0.jar
 ```
 
 Check that:
@@ -459,6 +470,10 @@ Check that:
 - Java version is `25`.
 - The jar file was fully downloaded.
 - The jar was built for your operating system and CPU architecture.
+
+### Windows Firewall asks about `peppol-utils-worker.exe`
+
+The app installed with the Windows installer runs validation, conversion, visualization and Peppol checks in `native-worker\peppol-utils-worker.exe`, a compiled helper inside the installation folder. The first Peppol check may make Windows Firewall ask about it. A Peppol check only makes outgoing requests; the helper never needs to accept incoming connections. If a security policy blocks the helper from starting, the app uses its slower Java helper (`Peppol-utils-worker.exe`) instead and gives the same results.
 
 ### macOS JavaFX or `QuantumRenderer` crash
 
