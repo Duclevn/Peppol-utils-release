@@ -1,8 +1,8 @@
-# Peppol-utils 1.6.1 End-User Guide
+# Peppol-utils 1.6.2 End-User Guide
 
 ## Table Of Contents
 
-- [What's New In 1.6.1](#whats-new-in-161)
+- [What's New In 1.6.2](#whats-new-in-162)
 
 **Getting started**
 
@@ -28,9 +28,16 @@
 14. [Troubleshooting](#14-troubleshooting)
 15. [Safe Use Recommendation](#15-safe-use-recommendation)
 
-## What's New In 1.6.1
+## What's New In 1.6.2
 
-This guide applies to the `peppol-utils-1.6.1.jar` desktop app and the 1.6.1 Windows installer. Version 1.6.1 fixes problems in the native helper of the Windows installer; validation rules, conversion and the app's screens are unchanged from 1.6.0.
+This guide applies to the `peppol-utils-1.6.2.jar` desktop app and the 1.6.2 Windows installer. Version 1.6.2 fixes two problems in the desktop app; validation rules, conversion and the app's screens are unchanged from 1.6.1.
+
+- Saving the invoice no longer closes the generated or converted XML tabs you have open. Before, a successful save removed them without asking, so edits you had not saved in a tab such as `Converted UBL XML` could be lost.
+- A PDF whose page is declared far larger than any real page no longer makes the preview draw a huge image. The preview now stays within its pixel limit however large the page is.
+
+### Changes in 1.6.1
+
+Version 1.6.1 fixed problems in the native helper of the Windows installer.
 
 - Visualizing an invoice that contains characters no bundled font covers (for example Japanese or Arabic text in a party name) no longer fails in the installed app.
 - Converting a UBL credit note works in the installed app, as it did in the Java version.
@@ -79,7 +86,7 @@ Version 1.4.0 moved the app to Java 25 and refreshed the workbench. Validation r
 Version 1.3.1 fixed problems found after 1.3.0. Validation rules and conversion are unchanged.
 
 - `Visualize` and `XML to PDF` work even if you have not opened the `Visualize invoice` tab yet. An unexpected failure now says so in plain words.
-- Converted or generated XML is marked `Unsaved` until you save it, and closing the app or opening another invoice asks before discarding it. The status bar shows the state of the tab you are looking at.
+- Converted or generated XML is marked `Unsaved` until you save it, and closing the app or opening another invoice asks before discarding it. Saving the invoice itself leaves these tabs open. The status bar shows the state of the tab you are looking at.
 - The app starts on a `No invoice open` screen with an `Open invoice` button, and the status bar no longer says work is running after it has stopped or was cancelled.
 - After validation the findings fill the space under the verdict; the invoice syntax, profile and VESID are in a section you can expand. In a narrow window the XML find bar moves its buttons to a second row instead of cutting them off.
 - The France CTC Flow 1 dialog explains `Base`, `Full` and the BT-23 billing framework codes. `XML to PDF` is no longer coloured like an error.
@@ -157,7 +164,7 @@ launch Peppol-utils from the Start menu or the optional desktop shortcut.
 For the universal JAR, put the jar in a folder you can find, for example
 `Downloads` or `Documents`. Open PowerShell in that folder and run:
 ```powershell
-java -jar .\peppol-utils-1.6.1.jar
+java -jar .\peppol-utils-1.6.2.jar
 ```
 
 ## 4. Open An Invoice
@@ -472,7 +479,7 @@ java -version
 Run it from PowerShell so you can see the error:
 
 ```powershell
-java -jar .\peppol-utils-1.6.1.jar
+java -jar .\peppol-utils-1.6.2.jar
 ```
 
 Check that:
