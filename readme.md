@@ -1,8 +1,8 @@
-# Peppol-utils 1.6.0 End-User Guide
+# Peppol-utils 1.6.1 End-User Guide
 
 ## Table Of Contents
 
-- [What's New In 1.6.0](#whats-new-in-160)
+- [What's New In 1.6.1](#whats-new-in-161)
 
 **Getting started**
 
@@ -28,9 +28,19 @@
 14. [Troubleshooting](#14-troubleshooting)
 15. [Safe Use Recommendation](#15-safe-use-recommendation)
 
-## What's New In 1.6.0
+## What's New In 1.6.1
 
-This guide applies to the `peppol-utils-1.6.0.jar` desktop app and the 1.6.0 Windows installer. In the installed Windows app, validation, conversion and visualization are faster: in our measurement, validating an XML invoice took about 1.1 s instead of 2.9 s, and visualizing it about 1.9 s instead of 3.3 s. Peppol checks still take as long as the network needs. Validation rules, conversion and the app's screens are unchanged from 1.5.0.
+This guide applies to the `peppol-utils-1.6.1.jar` desktop app and the 1.6.1 Windows installer. Version 1.6.1 fixes problems in the native helper of the Windows installer; validation rules, conversion and the app's screens are unchanged from 1.6.0.
+
+- Visualizing an invoice that contains characters no bundled font covers (for example Japanese or Arabic text in a party name) no longer fails in the installed app.
+- Converting a UBL credit note works in the installed app, as it did in the Java version.
+- A Windows profile or folder name with characters outside the system code page (for example Vietnamese letters) no longer stops the helper process.
+- A font cache that lists a font FOP could not load no longer stops the native helper, and a helper that ends without a result is reported with its exit code and Java error class.
+- The internal-error message names only the Java error class, never text from your invoice.
+
+### Changes in 1.6.0
+
+In the installed Windows app of version 1.6.0, validation, conversion and visualization are faster: in our measurement, validating an XML invoice took about 1.1 s instead of 2.9 s, and visualizing it about 1.9 s instead of 3.3 s. Peppol checks still take as long as the network needs. Validation rules, conversion and the app's screens are unchanged from 1.5.0.
 
 - The Windows installer now includes `peppol-utils-worker.exe`, a native program that does the app's heavy work in place of a Java process. It gives the same results with less memory. If your security software blocks it, the app falls back to the Java version automatically. The universal JAR still runs that work in Java, so it is not faster, but it has the other changes below.
 - The installer is bigger: about 91 MB instead of 49 MB, and the installed app takes about 586 MB on disk instead of about 360 MB.
@@ -147,7 +157,7 @@ launch Peppol-utils from the Start menu or the optional desktop shortcut.
 For the universal JAR, put the jar in a folder you can find, for example
 `Downloads` or `Documents`. Open PowerShell in that folder and run:
 ```powershell
-java -jar .\peppol-utils-1.6.0.jar
+java -jar .\peppol-utils-1.6.1.jar
 ```
 
 ## 4. Open An Invoice
@@ -266,7 +276,7 @@ To check publication status:
 2. Review the detected seller and buyer electronic addresses and schemes.
 3. Click `Check participant information`.
 4. Review the separate `Production` and `Test` results. When the check finishes, the status bar sums them up, for example `Peppol check finished. Seller: Production registered, Test registered. Buyer: Production not registered, Test registered.`
-5. Review the invoice-type badge in each Production and Test row, then expand a result to inspect the discovery details. These can include the SML DNS zone, SMP URL, a selected Billing Invoice access point (active when available, otherwise the earliest future or another inactive endpoint), Document Type details, and optional Business Card company names, country, and registration date when the SMP provides them. Document Type details are collapsed by default; expand one to see its blue bold name, scheme and identifier/value, plus each matching process pair in its own card with service activation, expiry, and lifecycle status. The collapsed `SMP` header shows the SMP URL; expand it to inspect the signing certificate details embedded in validated SMP XML signatures (subject, issuer, serial, validity, key, and certificate signature algorithm) when available. This is distinct from both the SMP server TLS certificate and the AP endpoint certificate. The collapsed `Access Point` header shows the selected endpoint URL and lifecycle status; expand it under `SMP & AP` to inspect the transport, URL, service, contact, certificate, activation, expiry, and status metadata once for the lookup result when the SMP supplies it. A `Not yet active` endpoint is published metadata, not a currently usable route. The certificate fields describe the AP endpoint certificate published in SMP service metadata; the SMP server TLS certificate is not captured. Click `Refresh` to bypass the short-lived cache and run the checks again.
+5. Review the invoice-type badge in each Production and Test row, then expand a result to inspect the discovery details. These can include the SML DNS zone, SMP URL, a selected Billing Invoice access point (active when available, otherwise the earliest future or another inactive endpoint), Document Type details, and optional Business Card company names, country, and registration date when the SMP provides them. Document Type details are collapsed by default; expand one to see its blue bold name, scheme and identifier/value, plus each matching process pair in its own card with service activation, expiry, and lifecycle status. The collapsed `SMP` header shows the SMP URL; expand it to inspect the signing certificate details embedded in validated SMP XML signatures (subject, issuer, serial, validity, key, and certificate signature algorithm) when available. This is distinct from both the SMP server TLS certificate and the AP endpoint certificate. The collapsed `Access Point` header shows the selected endpoint URL and lifecycle status; expand it under `SMP & AP` to inspect the transport, URL, service, contact, certificate, activation, expiry, and status metadata once for the lookup result when the SMP supplies it. A `Not yet active` endpoint is published metadata, not a currently usable route. The certificate fields describe the AP endpoint certificate published in SMP service metadata; the SMP server TLS certificate is not captured. Click `Refresh` to run the checks again.
 
 Production and Test are checked independently. The Peppol overview reports two separate conclusions: document-type publication (`Published by SMP`, `Not published by SMP`, or `Publication unknown`) and advertised process/endpoint metadata (`Active AS4 v2 endpoint metadata available`, `Active AS4 v2 endpoint metadata available; choose a process`, `No matching active endpoint`, or `Process and endpoint unresolved`). Each conclusion starts with an icon: a check when supported, a warning triangle when not, a clock while checking and an info circle when it needs your choice or could not be resolved. Document publication uses the exact Peppol document type identifier first (case-sensitive scheme and value), then the standard Peppol Wildcard Scheme. An exact same-scheme/value registration takes precedence; otherwise the selector chooses the wildcard with the greatest number of matching CustomizationID parts. A published document type is not by itself proof that a requested process can be delivered; an active metadata row is not an AS4 reachability test.
 
@@ -462,7 +472,7 @@ java -version
 Run it from PowerShell so you can see the error:
 
 ```powershell
-java -jar .\peppol-utils-1.6.0.jar
+java -jar .\peppol-utils-1.6.1.jar
 ```
 
 Check that:
@@ -474,6 +484,10 @@ Check that:
 ### Windows Firewall asks about `peppol-utils-worker.exe`
 
 The app installed with the Windows installer runs validation, conversion, visualization and Peppol checks in `native-worker\peppol-utils-worker.exe`, a compiled helper inside the installation folder. The first Peppol check may make Windows Firewall ask about it. A Peppol check only makes outgoing requests; the helper never needs to accept incoming connections. If a security policy blocks the helper from starting, the app uses its slower Java helper (`Peppol-utils-worker.exe`) instead and gives the same results.
+
+### An operation says the worker stopped
+
+If validation, conversion or visualization fails with `The worker stopped on an internal error: <error class>` or `The worker stopped without a result (exit code ...)`, the helper process ended unexpectedly. The first form names only the Java error class; the second names the exit code and, when known, the Java error class. Neither contains text from your invoice. The app does not repeat the operation in the Java helper on its own. Report the message line to the maintainer, together with the operation you ran and the invoice's syntax (UBL, CII or Factur-X); do not attach the invoice unless you are asked to.
 
 ### macOS JavaFX or `QuantumRenderer` crash
 
