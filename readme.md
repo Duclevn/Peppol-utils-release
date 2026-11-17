@@ -1,8 +1,9 @@
-# Peppol-utils 1.7.0 End-User Guide
+# Peppol-utils 1.7.1 End-User Guide
 
 ## Table Of Contents
 
-- [What's New In 1.7.0](#whats-new-in-170)
+- [What's New In 1.7.1](#whats-new-in-171)
+- [Also In 1.7.0: The New Window](#also-in-170-the-new-window)
 - [Also In 1.7.0: The Smaller Windows App](#also-in-170-the-smaller-windows-app)
 
 **Getting started**
@@ -29,16 +30,26 @@
 14. [Troubleshooting](#14-troubleshooting)
 15. [Safe Use Recommendation](#15-safe-use-recommendation)
 
-## What's New In 1.7.0
+## What's New In 1.7.1
 
-This guide applies to the `peppol-utils-1.7.0.jar` desktop app and the 1.7.0 Windows installer. Version 1.7.0 redesigns the desktop window; validation rules, conversion, saving and the Peppol checks themselves are unchanged from 1.6.2.
+This guide applies to the `peppol-utils-1.7.1.jar` desktop app and the 1.7.1 Windows installer. Version 1.7.1 polishes the window introduced in 1.7.0; validation rules, conversion, saving and the Peppol checks themselves are unchanged.
+
+- The validation drawer is one flat line: the result (`Failed · 13 errors`), the rule set and the time. Open, the same line carries the `All`, `Errors` and `Warnings` filters, `Copy report` and, for a Factur-X PDF, `Repair PDF container...`.
+- `Validate` is one flat amber button that names its rule set (`Validate · Default`); its arrow lists the rule sets with a short description of each.
+- `Overview` returns to the 1.6.x layout: Seller and Buyer are rows of the invoice card, and there is no `Checks` card.
+- The top bar shows the profile and `Saved` or `Unsaved` as plain text, and the `Menu` has no uppercase captions.
+- The Peppol lookup opens as a panel on the right half of the window, beside the invoice, with its own identifier field, `Look up` and `Close` buttons. The invoice stays visible and usable while it is open.
+
+## Also In 1.7.0: The New Window
+
+Version 1.7.0 redesigns the desktop window; validation rules, conversion, saving and the Peppol checks themselves are unchanged from 1.6.2.
 
 - There is no left sidebar any more. A top bar holds a `Menu` button (`Open...`, `Save changes`, `Save as...`, `Close invoice`, `Peppol lookup`, `About Peppol-utils`, `Exit`), the open invoice's profile and saved state, and a field to look up a Peppol participant (`Ctrl+L`).
 - `Validate` is a split button above the tabs. Its arrow lists the rule sets (`Default`, `France CTC`); choosing one validates right away. `Convert` is a menu next to it (`UBL to CII`, `CII to UBL`, `France CTC Flow 1`). The `Conversion` tab is gone.
 - The tabs are `Overview`, `Document` and `XML`. `Document` merges the old `PDF` and `Visualize invoice` tabs: `PDF`, `Rendered from XML`, or `Side by side`.
 - The validation results live in a drawer at the bottom of the invoice, not in a tab. Its one-line bar shows the result of the last run; `Show validation` opens it. The drawer never opens or closes by itself when a run finishes.
 - After a run, findings that sit on an XML line are marked in the XML editor's line-number gutter, and the findings table has a `Line` column. Editing the XML dims the markers (`out of date`) until you validate again.
-- `Overview` has Seller and Buyer tiles (with `Open Buyer in Peppol lookup` links) and a `Checks` card with the `Valid?` row.
+- `Overview` lists Seller and Buyer with the other invoice fields; the Peppol card has `Look up seller` and `Look up buyer` links.
 
 ## Also In 1.7.0: The Smaller Windows App
 
@@ -188,7 +199,7 @@ launch Peppol-utils from the Start menu or the optional desktop shortcut.
 For the universal JAR, put the jar in a folder you can find, for example
 `Downloads` or `Documents`. Open PowerShell in that folder and run:
 ```powershell
-java -jar .\peppol-utils-1.7.0.jar
+java -jar .\peppol-utils-1.7.1.jar
 ```
 
 ## 4. Open An Invoice
@@ -203,7 +214,7 @@ Until an invoice is open, the window shows `No invoice open` with its own `Open 
 
 For a PDF invoice, the app shows:
 
-- `Overview`: main invoice fields such as invoice number, totals, profile and VESID, the Seller and Buyer tiles, and a `Checks` card with the `Valid?` row.
+- `Overview`: main invoice fields such as invoice number, issue date, seller, buyer, totals, profile and VESID, and the Peppol participant information.
 - `Document`: the Factur-X PDF, the invoice rendered from its XML, or both side by side.
 - `XML`: the Factur-X XML that can be edited.
 - The `Validate` split button and the `Convert` menu above the tabs.
@@ -219,7 +230,7 @@ For a standalone XML invoice, the `PDF` view of `Document` is unavailable; `Rend
 | `Ctrl+S` | Save changes (when there are unsaved changes) |
 | `F5` or `Ctrl+Enter` | Validate the current XML |
 | `Ctrl+Tab` / `Ctrl+Shift+Tab` | Next / previous workbench tab (also from a field or value; focus moves to the tab header, as it does whenever the tab you were working in is left) |
-| `Ctrl+L` | Move to the Peppol participant field in the top bar |
+| `Ctrl+L` | Move to the Peppol participant field (in the lookup panel while it is open, otherwise in the top bar) |
 | `Ctrl+F` | Search in the XML editor (the invoice's, or a generated or converted tab's), also with focus on the tab strip while that tab is shown |
 | `Ctrl+W` | Close the selected generated or converted XML tab (asks first when it has unsaved changes) |
 | `Ctrl+=` / `Ctrl+-` / `Ctrl+0` | Make the whole interface larger / smaller / back to 100% (80% to 160%, remembered between sessions) |
@@ -235,11 +246,11 @@ While validation, opening, conversion, Flow 1 generation or visualization is run
 
 While one of these operations runs, every XML editor (the invoice's and those of generated or converted documents) is read-only and `Ctrl+Tab` and `Ctrl+W` do nothing, so what is saved or validated is exactly what you see. `Format XML` also runs in the background now, so formatting a very large document no longer freezes the window, and editing a generated document stays responsive because its syntax colours refresh after a short pause.
 
-When a `Validate` run finishes and you have not moved to another tab or control in the meantime, and the validation drawer is open, keyboard focus moves to the verdict at the top of the drawer (for example `Validation failed`), so a screen reader reads the outcome. A run never opens the drawer by itself; its one-line bar and the status message report the outcome. If you have switched away, focus is left where you put it.
+When a `Validate` run finishes and you have not moved to another tab or control in the meantime, and the validation drawer is open, keyboard focus moves to the drawer's line (for example `Failed · 13 errors`), so a screen reader reads the outcome. A run never opens the drawer by itself; its line and the status message report the outcome. If you have switched away, focus is left where you put it.
 
 With a screen reader running, the same happens for the other operations: when opening, saving, converting, formatting or visualizing finishes, or a Peppol check you started finishes while focus is still in its panel, focus moves to the status message at the bottom of the window so its outcome is read, and `Esc` returns focus to the control you started from. Read-only values (the Summary and Peppol values, the validation verdict and the status message) are `Tab` stops only while a screen reader is running; without one, `Tab` moves between controls only, and you can still click a value to select and copy it. In the XML Find field, the result (`Find result: 2 / 5`, `Find result: No matches`) is the field's help text, which a screen reader reads when the field takes focus or when you ask for the item's details; it is not spoken by itself as you type, so you can also `Tab` past the previous-match, next-match and close buttons to the result.
 
-All pixel widths follow the interface zoom, including the Overview labels, the validation table columns and the About dialog. In a narrow window or at a large zoom the Peppol participant field in the top bar becomes a magnifier button, so the work area keeps its room. The validation drawer also rearranges itself instead of cutting content off: the details of the selected finding move under the table, `Repair PDF` moves under the verdict, the filters above the table wrap to their own row, the `Validation set` column is hidden (the set is still shown in the details and the filter), and the tab scrolls when the window is too short. When Windows High Contrast is on, the workbench uses your high-contrast colours instead of its own palette; the selected row, tab and finding stay marked by an underline or bar rather than by colour alone.
+All pixel widths follow the interface zoom, including the Overview labels, the validation table columns and the About dialog. In a narrow window or at a large zoom the Peppol participant field in the top bar becomes a magnifier button, so the work area keeps its room; while the lookup panel is open the top bar shows neither, because the panel has its own field. The validation drawer also rearranges itself instead of cutting content off: the details of the selected finding move under the table, the `Validation set` column is hidden (the set is still shown in the details and the filter), and the tab scrolls when the window is too short. When Windows High Contrast is on, the workbench uses your high-contrast colours instead of its own palette; the selected row, tab and finding stay marked by an underline or bar rather than by colour alone.
 
 Dialogs that could lose work (`Save changes` over the original file, `Discard`, `Save anyway`, `Save unsigned test copy`, `Exit and cancel`) never take `Enter` as their default: `Enter` or `Esc` always chooses `Cancel` / `Keep working`. Failures show a short cause and what to try next; click `Show Details` for the full technical message.
 
@@ -258,7 +269,6 @@ Open the `Overview` tab to quickly inspect the invoice:
 - Due payable
 - Container format, XML syntax, guideline, profile, and VESID
 - Seller and buyer Peppol electronic-address information
-- The `Checks` card: `Valid?` shows the result of your last explicit `Validate` run (`Not validated yet` until then) and the rule set it used; after you edit the XML it reads `Out of date`.
 
 For a hybrid PDF, the format is detected from Factur-X/ZUGFeRD XMP metadata and the standard embedded XML filename. This distinction is important for EN 16931 because its BT-24 value can be identical in generic CII and Factur-X. If the XML is edited and still well-formed, the summary updates while retaining the opened PDF's container context.
 
@@ -298,7 +308,7 @@ A screen reader reads the editor as a text area named `Invoice XML`: it can read
 
 Generated and converted XML tabs have the same editor (named after the tab, for example `Converted UBL XML`), the same text-size controls, `Copy XML` and `Ctrl+F` search, plus a `Close tab` button. A generated or converted document counts as `Unsaved` (with `*` after its tab name) until you save it with `Save as...`, and again after any later edit. `Close tab`, `Ctrl+W`, the tab's own close button, opening another invoice and exiting all ask before discarding it.
 
-The `Saved` / `Unsaved` pill at the right of the status bar describes the selected document: a generated or converted tab's own state while that tab is selected, otherwise the opened invoice's.
+`Saved` / `Unsaved`, after the profile in the top bar, describes the selected document: a generated or converted tab's own state while that tab is selected, otherwise the opened invoice's.
 
 ## 8. Check Peppol Participant Information
 
@@ -326,11 +336,11 @@ Peppol lookup requires internet access. It queries Peppol SML/SMP discovery serv
 
 ### Look up any Peppol participant
 
-Type the identifier in the Peppol participant field of the top bar (`Ctrl+L` moves there), or use `Menu` > `Peppol lookup`, when the participant is not taken from the open invoice. The `Open Seller in Peppol lookup` and `Open Buyer in Peppol lookup` links of the Overview fill the field for you, but never start the lookup.
+Type the identifier in the Peppol participant field of the top bar (`Ctrl+L` moves there) and press Enter, or use `Menu` > `Peppol lookup`, when the participant is not taken from the open invoice. The lookup opens as a panel on the right half of the window, with its own identifier field and `Look up` button; the invoice (or the Start screen) stays visible and usable on the left, and opening, closing or switching invoices leaves the panel as it is. Drag the panel's left edge to make it wider or narrower; the app remembers the width until you quit. The `Look up seller` and `Look up buyer` links of the Overview open the panel with the identifier filled in, but never start the lookup.
 
 1. Enter an identifier such as `0225:152857363`. The full `iso6523-actorid-upis::0225:152857363` form is also accepted.
-2. Press Enter. Nothing is looked up until you do, and the identifiers you enter are not kept. Close the page with `Close Peppol lookup` or `Esc`.
-3. Review the separate Production and Test results below the search box. The status bar sums them up when the lookup finishes (`Peppol lookup of 0225:152857363 finished: Production registered, Test not registered.`).
+2. Press Enter or `Look up`. Nothing is looked up until you do, and the identifiers you enter are not kept. Results are never cached: `Look up` again queries both networks again, and the line above the results says when they were checked (`Checked 14:02 in Production and Test.`). Close the panel with `Close` at its top right, or `Esc` while you are in it.
+3. Review the separate Production and Test results below the field. The status bar sums them up when the lookup finishes (`Peppol lookup of 0225:152857363 finished: Production registered, Test not registered.`).
 4. Expand the environment details to inspect its SML/SMP source, the collapsed SMP panel with signing certificate details from validated XML signatures, Document Type details, the collapsed Access Point panel with the selected Billing Invoice endpoint URL, lifecycle status, and metadata, and optional Business Card. SMP signing certificates, AP endpoint certificates, and the SMP server TLS certificate are distinct; the TLS peer certificate is not captured.
 
 The identifier is checked locally before any request is sent. Each lookup is user initiated, Production and Test stay independent, and a network failure remains distinct from a participant that is not registered.
@@ -342,15 +352,15 @@ Choose the rule set with the arrow of the `Validate` split button above the tabs
 - `Default`: general Factur-X / EN 16931 validation.
 - `France CTC`: Flux 1 and Flux 10 use the Helger phive rule sets automatically. Flux 1 CII/UBL selects the Base/Démarrage or Full/Cible VESID from BT-24/CustomizationID, while the namespace-less Flux 10 `<Report>` selects the latest bundled `fr.ctc.flux10:report` set (1.1). Other documents first validate the exact detected invoice schema/profile VESID, then run the legacy 1.3.1 and latest bundled France CTC rule sets for CII/UBL EN 16931, CII/UBL Extended, UBL CreditNote, Factur-X, or CDAR. Factur-X BASIC WL, EN 16931, and EXTENDED use the dedicated France CTC Factur-X rule sets. The legacy set is skipped if it is not bundled.
 
-Click `Validate` (or press `F5` / `Ctrl+Enter`). The result appears on the one-line bar at the bottom of the invoice; click `Show validation` to open the drawer with the findings. Save checks (the strict save) always use the `Default` rule set, whichever one you chose here.
+Click `Validate` (or press `F5` / `Ctrl+Enter`). The result appears on the line at the bottom of the invoice (for example `Failed · 13 errors   Default · 14:02`; its tooltip lists what each validation set found); click `Show validation` to open the drawer with the findings. Save checks (the strict save) always use the `Default` rule set, whichever one you chose here.
 
 For a saved Factur-X PDF, the default validation covers the complete hybrid document: Kaltblut checks the Factur-X/ZUGFeRD BR-HYBRID container and XMP rules, veraPDF checks PDF/A-3 conformance, and DDD/phive check the embedded XML schema and business rules. PDF/A findings include the veraPDF rule and PDF object location. Container and XMP checks also run when `France CTC` is selected, alongside that profile's XML validation route.
 
-Before validation is run, the validation drawer says `Not validated yet`; opening an invoice does not imply that it passed. Below the verdict, the collapsed `Invoice syntax, profile and VESID` section repeats the detected XML syntax, profile, guideline, and VESID from Summary; expand it when you need them, so the findings keep the space under the verdict.
+Before validation is run, the validation drawer says `Not validated yet`; opening an invoice does not imply that it passed. The detected XML syntax, profile, guideline and VESID are on the `Overview` tab.
 
-After validation, the headline gives the overall result: `Validation passed`, `Validation passed with warnings`, or `Validation failed`. It names the validation set when only one set is responsible, or the number of sets otherwise. The line under it reads `Profile: <profile> · Ran: <sets>` and lists each validation set that reported findings as passed, passed with warnings, or failed (for example `Invoice profile rules — failed (1 error)`). The validators do not report which rule sets executed, so a set that produced no findings at all is not listed; the line never claims a set ran when it reported nothing. Passed checks and profile-detection messages are not listed as rows.
+After validation, the drawer's line gives the overall result: `Passed`, `Passed with 2 warnings`, or `Failed · 3 errors`, followed by the rule set and the time of the run. Its tooltip reads `Rule set: <rule set>. Ran <sets>` and lists each validation set that reported findings as passed, passed with warnings, or failed (for example `Invoice profile rules: failed (1 error)`). The validators do not report which rule sets executed, so a set that produced no findings at all is not listed; the tooltip never claims a set ran when it reported nothing. Passed checks and profile-detection messages are not listed as rows.
 
-The table shows only errors and warnings. Blocking errors come first, then warnings; within each group the current rule sets come before the legacy `FR CTC old` set. The first blocking issue is selected for you. Use the two lists above the table to show only errors or warnings, or only one validation set; the counter then reads `2 of 7 issues`.
+The table shows only errors and warnings. Blocking errors come first, then warnings; within each group the current rule sets come before the legacy `FR CTC old` set. The first blocking issue is selected for you. When the drawer is open, its line also carries `All`, `Errors` and `Warnings` (each with its count) to filter the table, and, when the report has findings from more than one validation set, a list to show only one set.
 
 Select an issue to inspect, in the details panel beside the table (under it in a narrow window), its rule ID, description, element XPath, and expected or allowed values when the validator references a bundled code list. Expand `Technical details` for the validator test, engine/layer, rule artefact, source document, and Schematron role when supplied. The technical validator test is the XPath/Schematron condition evaluated by the validation engine; it is diagnostic logic, not usually a value to paste into the invoice.
 
@@ -358,7 +368,7 @@ For the selected issue you can:
 
 - Click `Show in XML`, press `Enter`, or double-click the row to move the XML editor to the element named by the finding's XPath. This is best effort: the element is matched by name and position among its siblings, namespace prefixes are ignored, and the status bar says so when the element cannot be found or the finding has no element location (for example a PDF container finding). If the results are out of date the element may have moved.
 - Click `Copy finding` (or press `Ctrl+C` in the table) to copy that finding with its validation set, rule, locations, test and guidance.
-- Use `Copy report` above the table, or the row's right-click menu, to copy every finding.
+- Use `Copy report` on the drawer's line, or the row's right-click menu, to copy every finding.
 
 The table columns are:
 
@@ -372,12 +382,12 @@ The drawer can be resized, maximized and hidden; it keeps the state you leave it
 
 Two situations never look like a normal result:
 
-- **Results out of date.** If you edit the XML or change the validation profile after a run, the headline turns neutral and reads `Results out of date — XML changed` (or `— validation profile changed`) and the table is dimmed. Nothing is re-evaluated until you click `Validate` again. Opening a CDAR message switches the profile to `France CTC` automatically and says so in the status bar.
-- **Validation could not run.** If the validator itself fails (for example its worker process cannot start), the tab shows `Validation could not run` with the cause and a `Retry validation` button. The earlier report is cleared, so it cannot be mistaken for a verdict on the current XML.
+- **Results out of date.** If you edit the XML or change the validation profile after a run, the line reads `Out of date` in amber, its tooltip says why (`XML changed` or `validation profile changed`), and the table is dimmed. Nothing is re-evaluated until you click `Validate` again. Opening a CDAR message switches the profile to `France CTC` automatically and says so in the status bar.
+- **Validation could not run.** If the validator itself fails (for example its worker process cannot start), the line reads `Validation could not run`, and the drawer shows the cause and a `Retry validation` button. The earlier report is cleared, so it cannot be mistaken for a verdict on the current XML.
 
 A very large report (more than 20,000 findings, or thousands of very long ones) is shortened so it fits the app's 8 MiB limit for worker results. Fatal errors and errors are kept first, then warnings, in their original order. The last row has the rule code `WORKER-REPORT-TRIMMED` and says how many findings of each severity were left out. That row takes the most severe level among the omitted findings, so a shortened report that omits errors still fails and still blocks a strict save. The CLI and the core API always return the full report.
 
-If there are no errors or warnings, the table says so. Findings are grouped under user-facing validation set names: `Invoice profile rules` (the detected schema/profile VESID, run by phive), `FR CTC` (the latest bundled France CTC version), `FR CTC old` (the legacy 1.3.1 set), and `Factur-X PDF container`; engine names such as PHIVE and Kaltblut stay in the technical details. Both France CTC versions run when 1.3.1 is available in Helger phive; if a future dependency release removes it, only the latest set runs. Warnings remain non-blocking; validator execution failures and error/fatal assertions block strict saving.
+If there are no errors or warnings, the drawer shows one line that says so and what ran, without an empty details panel. Findings are grouped under user-facing validation set names: `Invoice profile rules` (the detected schema/profile VESID, run by phive), `FR CTC` (the latest bundled France CTC version), `FR CTC old` (the legacy 1.3.1 set), and `Factur-X PDF container`; engine names such as PHIVE and Kaltblut stay in the technical details. Both France CTC versions run when 1.3.1 is available in Helger phive; if a future dependency release removes it, only the latest set runs. Warnings remain non-blocking; validator execution failures and error/fatal assertions block strict saving.
 
 Flux 1 trajectory selection uses `urn.cpro.gouv.fr:1p0:einvoicingextract#Base` for Démarrage and `...#Full` for Cible. The service reports the latest bundled `fr.ctc.flux1:*` VESID (currently 1.1) in the ordinary PHIVE validation set. Generated Flow 1 output still applies the field catalog and temporary operational mapping before running the same phive-backed completeness check.
 
@@ -414,7 +424,7 @@ Each item names its route (for example `UBL to CII`). The menu has two groups. C
   - `UBL to CII` for a UBL 2.1 Invoice or CreditNote. The app opens a `Converted CII` tab.
   - `CII to UBL` for CII / Factur-X XML. The app opens a `Converted UBL` tab.
 - **Generate a document**
-  - `France CTC Flow 1` (with the French flag) generates France CTC Flow 1 XML from supported CII or UBL input.
+  - `France CTC Flow 1` generates France CTC Flow 1 XML from supported CII or UBL input.
 
 An item that cannot run for the open XML is greyed out and says why after its name, for example `UBL to CII — the open XML is CII; available when it is UBL` or `not available for a CDAR message`. Before an invoice is open, the whole menu is disabled. Rendering the XML as a PDF is no longer a Convert item; it lives in the `Document` tab. Each syntax conversion runs only when the current XML has the matching input syntax. CII input can be:
 
@@ -480,7 +490,7 @@ After saving, the app reopens the saved file and shows the validation result.
 
 ### Repair an invalid Factur-X PDF container
 
-When a PDF's embedded invoice XML is valid but its Factur-X XMP, PDF/A-3 metadata, checksum, output intent, or embedded-file metadata is invalid, open the validation drawer (`Show validation`) and click `Repair PDF container...`.
+When a PDF's embedded invoice XML is valid but its Factur-X XMP, PDF/A-3 metadata, checksum, output intent, or embedded-file metadata is invalid, open the validation drawer (`Show validation`) and click `Repair PDF container...` on its line.
 
 The repair action preserves the saved embedded XML, re-exports the hybrid container through Mustangproject, and validates the staged result before writing it. It always creates a separate `-repaired.pdf` copy by default; the original invoice is not overwritten. Save or discard any XML editor changes before starting repair.
 
@@ -508,7 +518,7 @@ java -version
 Run it from PowerShell so you can see the error:
 
 ```powershell
-java -jar .\peppol-utils-1.7.0.jar
+java -jar .\peppol-utils-1.7.1.jar
 ```
 
 Check that:
@@ -579,7 +589,7 @@ Fix the reported issue, close other apps that may be using the invoice, and try 
 
 ### Peppol lookup fails
 
-Check your internet connection and whether a firewall, proxy, or DNS policy blocks Peppol discovery. A timeout or lookup failure does not mean the participant is unregistered; it means the app could not obtain a reliable result. Click `Refresh` to try again.
+Check your internet connection and whether a firewall, proxy, or DNS policy blocks Peppol discovery. A timeout or lookup failure does not mean the participant is unregistered; it means the app could not obtain a reliable result. Click `Refresh` on the Overview, or `Look up` in the lookup panel, to try again.
 
 ## 15. Safe Use Recommendation
 
