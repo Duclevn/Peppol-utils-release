@@ -1,8 +1,10 @@
-# Peppol-utils 1.7.1 End-User Guide
+# Peppol-utils 1.8.0 End-User Guide
 
 ## Table Of Contents
 
-- [What's New In 1.7.1](#whats-new-in-171)
+- [What's New In 1.8.0: The Invoice Tab](#whats-new-in-180-the-invoice-tab)
+- [Also In 1.8.0: Interface Polish](#also-in-180-interface-polish)
+- [Also In 1.7.1](#also-in-171)
 - [Also In 1.7.0: The New Window](#also-in-170-the-new-window)
 - [Also In 1.7.0: The Smaller Windows App](#also-in-170-the-smaller-windows-app)
 
@@ -15,7 +17,7 @@
 
 **Using the app**
 
-5. [Read The Summary](#5-read-the-summary)
+5. [Read The Overview](#5-read-the-overview)
 6. [View A PDF Invoice](#6-view-a-pdf-invoice)
 7. [Edit XML](#7-edit-xml)
 8. [Check Peppol Participant Information](#8-check-peppol-participant-information)
@@ -30,9 +32,31 @@
 14. [Troubleshooting](#14-troubleshooting)
 15. [Safe Use Recommendation](#15-safe-use-recommendation)
 
-## What's New In 1.7.1
+## What's New In 1.8.0: The Invoice Tab
 
-This guide applies to the `peppol-utils-1.7.1.jar` desktop app and the 1.7.1 Windows installer. Version 1.7.1 polishes the window introduced in 1.7.0; validation rules, conversion, saving and the Peppol checks themselves are unchanged.
+This guide applies to the `peppol-utils-1.8.0.jar` desktop app and the 1.8.0 Windows installer. Version 1.8.0 reorganises the window around one `Invoice` tab; validation rules, conversion, saving and the Peppol checks themselves are unchanged.
+
+- The tabs are `Invoice` and `XML`. The `Overview` and `Document` tabs are gone: the `Invoice` tab shows an `Overview` card at the left (a fixed width that scrolls on its own) and a `Document` card taking the rest of the width.
+- The `Overview` card has five sections: `Invoice` (number, type code with its name such as `380 (Commercial invoice)`, issue date, line items, currency), `Amounts` (amount due, grand total, tax total, each with the currency), `Seller` and `Buyer` (company name, electronic address, scheme and participant ID), and `Format and profile` (format, XML syntax, profile, guideline and VESID).
+- `Seller` and `Buyer` each have a `Peppol lookup` button. It opens the lookup panel as a third column in a wide window (in place of the `Document` card otherwise), fills in that party's participant ID and runs the lookup at once; every click queries the networks again. The button is greyed out, with the reason under the section, when the party has no electronic address or its scheme is not a Peppol scheme. While the panel shows a party, that section is marked in the stone tone and its button looks pressed; `Close` or `Esc` removes the mark and brings the `Document` card back.
+- The Peppol participant card, the `Check participant information` button, the Seller and Buyer selector and the `Side by side` mode are gone. The top bar's lookup field still looks up any participant.
+- In the `Document` card, a Factur-X PDF has a switch at the left of the toolbar, `Original PDF` (the default) and `Visualize from XML`, with the page and zoom controls at the right; for the rendering, the `⋯` button there holds `Render again` and `Save PDF as…`. The rendering is made only when you choose `Visualize from XML`. A standalone XML shows the title `Visualize from XML` instead of a switch and is rendered as soon as it is opened, locally.
+- `About Peppol-utils` has two tabs: `About` and `Dependencies`. `Dependencies` lists the libraries bundled in the build (name, group and version) with a filter, a count and `Copy list`, which copies `group:artifact:version` lines.
+
+## Also In 1.8.0: Interface Polish
+
+1.8.0 also changes how the window looks and reads (this polish was prepared as 1.7.2, which was not published on its own).
+
+- The window sits on a cooler grey, with one 16px margin at the edges. The validation line is a coloured band: grey before a run, green for `Passed`, red for `Failed`, amber for warnings or an out-of-date report. In the findings table the severity column shows an icon only; its tooltip and screen-reader name still say Error or Warning.
+- `Validate` and `Convert` carry small icons, and the rule set named `Default` before reads `Auto` on screen: `Validate with Auto` uses the rules for the detected syntax and profile. The command-line tool and saved reports still call it `Default`.
+- The Peppol lookup panel uses a graphite-on-stone tone. Seller and Buyer have small icons.
+- The Document view has one toolbar row: the view switch (or title) at the left, and paging, zoom and (for the rendering) the `⋯` menu with `Render again` and `Save PDF as…` at the right. In a narrow window the right part moves to a second row. The XML tab no longer repeats `Save as…`; use `Menu` > `Save as…` or `Ctrl+Shift+S`.
+- Every confirmation dialog looks the same: a status icon (warning, error or information), a bold question, one short explanation and a button bar. The safe choice is filled blue, a risky choice (`Discard`, `Save anyway`, `Save changes`) is outlined in red, and `Cancel` is plain. `Enter` still chooses `Cancel`, and its focus ring shows as soon as the dialog opens.
+- The unsaved-changes dialog asks `Save changes before closing the workbench?` (or `closing the invoice`, `opening another invoice`), names what is unsaved, and says that discarding cannot be undone. Its `Save…` button replaces `Save & review` and still saves one document at a time. The save dialog asks `Replace the original invoice?` and shows the file path on one line.
+
+## Also In 1.7.1
+
+Version 1.7.1 polished the window introduced in 1.7.0; validation rules, conversion, saving and the Peppol checks themselves are unchanged.
 
 - The validation drawer is one flat line: the result (`Failed · 13 errors`), the rule set and the time. Open, the same line carries the `All`, `Errors` and `Warnings` filters, `Copy report` and, for a Factur-X PDF, `Repair PDF container...`.
 - `Validate` is one flat amber button that names its rule set (`Validate · Default`); its arrow lists the rule sets with a short description of each.
@@ -199,7 +223,7 @@ launch Peppol-utils from the Start menu or the optional desktop shortcut.
 For the universal JAR, put the jar in a folder you can find, for example
 `Downloads` or `Documents`. Open PowerShell in that folder and run:
 ```powershell
-java -jar .\peppol-utils-1.7.1.jar
+java -jar .\peppol-utils-1.8.0.jar
 ```
 
 ## 4. Open An Invoice
@@ -214,13 +238,13 @@ Until an invoice is open, the window shows `No invoice open` with its own `Open 
 
 For a PDF invoice, the app shows:
 
-- `Overview`: main invoice fields such as invoice number, issue date, seller, buyer, totals, profile and VESID, and the Peppol participant information.
-- `Document`: the Factur-X PDF, the invoice rendered from its XML, or both side by side.
+- `Invoice`: the `Overview` card (invoice number, type code, issue date, line items, currency, amounts, seller and buyer with their `Peppol lookup` buttons, format, syntax, profile and VESID) beside the `Document` card (the Factur-X PDF, or the invoice rendered from its XML).
 - `XML`: the Factur-X XML that can be edited.
 - The `Validate` split button and the `Convert` menu above the tabs.
 - The validation drawer at the bottom: validation messages and warnings.
 
-For a standalone XML invoice, the `PDF` view of `Document` is unavailable; `Rendered from XML` is still offered. The Factur-X XML attachments of a PDF other than the invoice XML are not shown.
+For a standalone XML invoice, the `Document` card has no `Original PDF` view: its title is `Visualize from XML` and the rendering appears as soon as the invoice is open. The Factur-X XML attachments of a PDF other than the invoice XML are not shown.
+
 
 ### Keyboard shortcuts, interface zoom and cancelling
 
@@ -248,43 +272,38 @@ While one of these operations runs, every XML editor (the invoice's and those of
 
 When a `Validate` run finishes and you have not moved to another tab or control in the meantime, and the validation drawer is open, keyboard focus moves to the drawer's line (for example `Failed · 13 errors`), so a screen reader reads the outcome. A run never opens the drawer by itself; its line and the status message report the outcome. If you have switched away, focus is left where you put it.
 
-With a screen reader running, the same happens for the other operations: when opening, saving, converting, formatting or visualizing finishes, or a Peppol check you started finishes while focus is still in its panel, focus moves to the status message at the bottom of the window so its outcome is read, and `Esc` returns focus to the control you started from. Read-only values (the Summary and Peppol values, the validation verdict and the status message) are `Tab` stops only while a screen reader is running; without one, `Tab` moves between controls only, and you can still click a value to select and copy it. In the XML Find field, the result (`Find result: 2 / 5`, `Find result: No matches`) is the field's help text, which a screen reader reads when the field takes focus or when you ask for the item's details; it is not spoken by itself as you type, so you can also `Tab` past the previous-match, next-match and close buttons to the result.
+With a screen reader running, the same happens for the other operations: when opening, saving, converting, formatting or visualizing finishes, or a Peppol check you started finishes while focus is still in its panel, focus moves to the status message at the bottom of the window so its outcome is read, and `Esc` returns focus to the control you started from. Read-only values (the Overview and Peppol values, the validation verdict and the status message) are `Tab` stops only while a screen reader is running; without one, `Tab` moves between controls only, and you can still click a value to select and copy it. In the XML Find field, the result (`Find result: 2 / 5`, `Find result: No matches`) is the field's help text, which a screen reader reads when the field takes focus or when you ask for the item's details; it is not spoken by itself as you type, so you can also `Tab` past the previous-match, next-match and close buttons to the result.
 
-All pixel widths follow the interface zoom, including the Overview labels, the validation table columns and the About dialog. In a narrow window or at a large zoom the Peppol participant field in the top bar becomes a magnifier button, so the work area keeps its room; while the lookup panel is open the top bar shows neither, because the panel has its own field. The validation drawer also rearranges itself instead of cutting content off: the details of the selected finding move under the table, the `Validation set` column is hidden (the set is still shown in the details and the filter), and the tab scrolls when the window is too short. When Windows High Contrast is on, the workbench uses your high-contrast colours instead of its own palette; the selected row, tab and finding stay marked by an underline or bar rather than by colour alone.
+All pixel widths follow the interface zoom, including the Overview card and its labels, the validation table columns and the About dialog. In a narrow window or at a large zoom the Peppol participant field in the top bar becomes a magnifier button, so the work area keeps its room; while the lookup panel is open the top bar shows neither, because the panel has its own field. The validation drawer also rearranges itself instead of cutting content off: the details of the selected finding move under the table, the `Validation set` column is hidden (the set is still shown in the details and the filter), and the tab scrolls when the window is too short. When Windows High Contrast is on, the workbench uses your high-contrast colours instead of its own palette; the selected row, tab and finding stay marked by an underline or bar rather than by colour alone.
 
 Dialogs that could lose work (`Save changes` over the original file, `Discard`, `Save anyway`, `Save unsigned test copy`, `Exit and cancel`) never take `Enter` as their default: `Enter` or `Esc` always chooses `Cancel` / `Keep working`. Failures show a short cause and what to try next; click `Show Details` for the full technical message.
 
-## 5. Read The Summary
+## 5. Read The Overview
 
-Open the `Overview` tab to quickly inspect the invoice:
+The `Overview` card, at the left of the `Invoice` tab, shows the invoice in five sections:
 
-- Invoice number
-- Type code
-- Issue date
-- Seller and buyer
-- Currency
-- Line count
-- Tax total
-- Grand total
-- Due payable
-- Container format, XML syntax, guideline, profile, and VESID
-- Seller and buyer Peppol electronic-address information
+- `Invoice`: invoice number, type code (with its name, for example `380 (Commercial invoice)`; an unknown code is shown as its number alone and a missing one is left out), issue date, line items and currency
+- `Amounts`: amount due, grand total and tax total, each with the currency
+- `Seller` and `Buyer`: company name, electronic address, scheme and participant ID, and a `Peppol lookup` button (see section 8)
+- `Format and profile`: container format, XML syntax, profile, guideline and VESID
 
-For a hybrid PDF, the format is detected from Factur-X/ZUGFeRD XMP metadata and the standard embedded XML filename. This distinction is important for EN 16931 because its BT-24 value can be identical in generic CII and Factur-X. If the XML is edited and still well-formed, the summary updates while retaining the opened PDF's container context.
+For a hybrid PDF, the format is detected from Factur-X/ZUGFeRD XMP metadata and the standard embedded XML filename. This distinction is important for EN 16931 because its BT-24 value can be identical in generic CII and Factur-X. If the XML is edited and still well-formed, the overview updates while retaining the opened PDF's container context. The card scrolls on its own when the window is short, and its values can be selected and copied.
 
-## 6. View A PDF Invoice
 
-Open the `Document` tab and choose `PDF`.
+## 6. View The Document
 
-Use:
+The `Document` card, at the right of the `Invoice` tab, shows the Factur-X PDF or the invoice rendered from its XML. For a Factur-X PDF, choose between `Original PDF` (the default) and `Visualize from XML` with the switch at the left of the card's toolbar.
+
+In `Original PDF`, use:
 
 - The arrow buttons (`Previous page` / `Next page`) to move between pages.
 - The magnifier buttons (`Zoom out` / `Zoom in`) to change the page size.
 - The scrollbars to move around the page when it is larger than the view.
 
-The PDF page is centered in the view with padding around it. The `PDF` view is only available when the opened invoice is a PDF.
+The PDF page is centered in the view with padding around it. `Original PDF` is only available when the opened invoice is a PDF.
 
-Choose `Rendered from XML` to see the invoice drawn from its XML, or `Side by side` to compare the Factur-X PDF (`FACTUR-X PDF · the invoice file`) with the rendering (`RENDERED FROM XML`); in `Side by side` the page and zoom buttons move both halves. The rendering is made only when you choose it (or click `Render the invoice from its XML` / `Render again`); opening an invoice or the tab never renders it, and both previews are released when you leave the tab.
+Choose `Visualize from XML` to see the invoice drawn from its XML; the same page and zoom buttons apply, and `⋯` > `Save PDF as…` writes the rendering to a PDF file. The rendering is made only when you choose it (or choose `⋯` > `Render again`) and runs locally; opening an invoice never renders it, and both previews are released when you leave the `Invoice` tab. A standalone XML has no switch: the card's title says `Visualize from XML` and the rendering is made when the invoice is opened.
+
 
 ## 7. Edit XML
 
@@ -298,8 +317,8 @@ Available actions:
 - Use the minus and plus buttons at the right of the toolbar to adjust XML editor text size from 75% to 200%; the current size is shown between them.
 - Press `Ctrl+F`, or click the magnifier at the right of the toolbar, to search in the XML. The search bar opens at the right, under the toolbar.
 - Use the up and down arrows in the search bar for the previous and next match (the count, such as `1 / 42`, is shown beside them) and the cross to close it. In a narrow window or at a large interface zoom they move below the search field.
-- Click `Visualize` to render the current XML in the `Document` tab.
-- Click `Save as...` to write the current invoice to a new PDF or XML file without first choosing the overwrite/save-copy dialog.
+- Click `Visualize` to render the current XML in the `Document` card of the `Invoice` tab.
+- Use `Menu` > `Save as…` (`Ctrl+Shift+S`) to write the current invoice to a new PDF or XML file without first choosing the overwrite/save-copy dialog.
 - Use the editor scrollbars to move vertically or horizontally through long XML files.
 
 When you edit the XML, the app marks the invoice as `Unsaved` and enables `Menu` > `Save changes` (`Ctrl+S`).
@@ -312,51 +331,51 @@ Generated and converted XML tabs have the same editor (named after the tab, for 
 
 ## 8. Check Peppol Participant Information
 
-The `Overview` tab shows a `Peppol participant information` area for the seller and buyer. The app reads only the standard electronic-address fields from the invoice and first checks locally whether each address has an eligible Peppol participant scheme. It does not substitute a tax ID, legal ID, generic party ID, or email address.
+The `Seller` and `Buyer` sections of the `Overview` card show the electronic address, scheme and participant ID the app found in the invoice. The app reads only the standard electronic-address fields from the invoice and first checks locally whether each address has an eligible Peppol participant scheme. It does not substitute a tax ID, legal ID, generic party ID, or email address.
 
 To check publication status:
 
-1. Open the `Overview` tab.
-2. Review the detected seller and buyer electronic addresses and schemes.
-3. Click `Check participant information`.
-4. Review the separate `Production` and `Test` results. When the check finishes, the status bar sums them up, for example `Peppol check finished. Seller: Production registered, Test registered. Buyer: Production not registered, Test registered.`
-5. Review the invoice-type badge in each Production and Test row, then expand a result to inspect the discovery details. These can include the SML DNS zone, SMP URL, a selected Billing Invoice access point (active when available, otherwise the earliest future or another inactive endpoint), Document Type details, and optional Business Card company names, country, and registration date when the SMP provides them. Document Type details are collapsed by default; expand one to see its blue bold name, scheme and identifier/value, plus each matching process pair in its own card with service activation, expiry, and lifecycle status. The collapsed `SMP` header shows the SMP URL; expand it to inspect the signing certificate details embedded in validated SMP XML signatures (subject, issuer, serial, validity, key, and certificate signature algorithm) when available. This is distinct from both the SMP server TLS certificate and the AP endpoint certificate. The collapsed `Access Point` header shows the selected endpoint URL and lifecycle status; expand it under `SMP & AP` to inspect the transport, URL, service, contact, certificate, activation, expiry, and status metadata once for the lookup result when the SMP supplies it. A `Not yet active` endpoint is published metadata, not a currently usable route. The certificate fields describe the AP endpoint certificate published in SMP service metadata; the SMP server TLS certificate is not captured. Click `Refresh` to run the checks again.
+1. Open the `Invoice` tab and review the detected seller and buyer electronic addresses and schemes in the `Overview` card.
+2. Click the `Peppol lookup` button of the `Seller` or `Buyer` section. The lookup panel opens with that party's participant ID filled in, and the lookup runs at once. In a wide window it opens as a third column to the right of the `Document` card; drag the divider to change its width. In a narrower window it opens in place of the `Document` card. The button is greyed out when the party has no usable Peppol participant ID; the reason is written under the section.
+3. While the panel shows that party, its section is marked in the stone tone. Click the button again, or `Look up` in the panel, to query the networks again; nothing is cached.
+4. Review the separate `Production` and `Test` results. When the lookup finishes, the status bar sums them up, for example `Peppol lookup of 0225:152857363 finished: Production registered, Test registered.`
+5. Review the invoice-type badge in each Production and Test row (it compares the published document types with the open invoice), then expand a result to inspect the discovery details. These can include the SML DNS zone, SMP URL, a selected Billing Invoice access point (active when available, otherwise the earliest future or another inactive endpoint), the Document types list, and optional Business Card company names, country, and registration date when the SMP provides them. The Document types tab is a flat list with one row per document type: its name, the number of processes and a status dot (green for an active endpoint, amber for one that is not yet active, red for an expired one, grey otherwise; no dot when the SMP published no endpoint). A type published under the same document type as the open invoice comes first and carries a `This invoice` tag. Rows are collapsed by default; expand one to see its identifier and scheme, then each process with its scheme, and each endpoint with its URL, transport profile, activation and expiry times and lifecycle status. The copy buttons copy the full identifier or endpoint URL. The `SMP & AP` tab lists Discovery (the SML DNS zone and the SMP URL, with a copy button) and the Access Point. The collapsed `SMP signing certificate` row shows when the first certificate stops being valid; expand it to inspect the signing certificate details embedded in validated SMP XML signatures (subject, issuer, serial, one validity line, key, and certificate signature algorithm) when available. This is distinct from both the SMP server TLS certificate and the AP endpoint certificate. The `Access Point` row, open by default like a document type, shows its lifecycle status next to the title and the certificate's expiry at the right; it lists the selected endpoint URL (with a copy button), transport profile, certificate, issuer and validity, contacts, service description, and service period once for the lookup result when the SMP supplies them. A `Not yet active` endpoint is published metadata, not a currently usable route. The certificate fields describe the AP endpoint certificate published in SMP service metadata; the SMP server TLS certificate is not captured. Click `Look up` again to run the checks again.
 
-Production and Test are checked independently. The Peppol overview reports two separate conclusions: document-type publication (`Published by SMP`, `Not published by SMP`, or `Publication unknown`) and advertised process/endpoint metadata (`Active AS4 v2 endpoint metadata available`, `Active AS4 v2 endpoint metadata available; choose a process`, `No matching active endpoint`, or `Process and endpoint unresolved`). Each conclusion starts with an icon: a check when supported, a warning triangle when not, a clock while checking and an info circle when it needs your choice or could not be resolved. Document publication uses the exact Peppol document type identifier first (case-sensitive scheme and value), then the standard Peppol Wildcard Scheme. An exact same-scheme/value registration takes precedence; otherwise the selector chooses the wildcard with the greatest number of matching CustomizationID parts. A published document type is not by itself proof that a requested process can be delivered; an active metadata row is not an AS4 reachability test.
+Production and Test are checked independently. The lookup result reports two separate conclusions: document-type publication (`Published by SMP`, `Not published by SMP`, or `Publication unknown`) and advertised process/endpoint metadata (`Active AS4 v2 endpoint metadata available`, `Active AS4 v2 endpoint metadata available; choose a process`, `No matching active endpoint`, or `Process and endpoint unresolved`). Each conclusion starts with an icon: a check when supported, a warning triangle when not, a clock while checking and an info circle when it needs your choice or could not be resolved. Document publication uses the exact Peppol document type identifier first (case-sensitive scheme and value), then the standard Peppol Wildcard Scheme. An exact same-scheme/value registration takes precedence; otherwise the selector chooses the wildcard with the greatest number of matching CustomizationID parts. A published document type is not by itself proof that a requested process can be delivered; an active metadata row is not an AS4 reachability test.
 
 For a recognized Factur-X hybrid PDF with explicit France CTC buyer routing (`schemeID=0225`), the comparison uses the French `pdf+xml` Factur-X transport type, not the embedded CII XML type. The embedded XML remains the source for invoice data and validation. A recognized Factur-X PDF without that routing context remains unresolved; the embedded CII type is never used as a fallback. Standalone XML carries its raw DDD BT-23/ProfileID process into the comparison, and a value that is not an exact member of the matched DTI's allowed process set is rejected. A Factur-X PDF's embedded BusinessProcess value is not treated as its Peppol transport process, so only that PDF case leaves process selection unresolved and exposes the allowed active processes advertised for the matched PDF registration instead. Test support does not imply Production support.
 
-![Peppol participant information showing separate Production and Test results, discovery details, Business Card data, Document Type details, and collapsed SMP signing-certificate and Access Point panels.](docs/images/peppol-participant-information.png)
+![Peppol participant information showing separate Production and Test results, discovery details, Business Card data, the Document types list, and the SMP signing-certificate and Access Point sections.](docs/images/peppol-participant-information.png)
 
-*Peppol participant information in the Overview tab (the screenshot predates the 1.7.0 layout). Production and Test are reported independently; this example shows a participant registered in Test but not in Production, with the invoice type unsupported in both environments.*
+*Peppol participant information in the lookup panel (the screenshot predates the 1.7.0 layout). Production and Test are reported independently; this example shows a participant registered in Test but not in Production, with the invoice type unsupported in both environments.*
 
-Registration and invoice-type support are separate results. A participant can be registered while not publishing the exact document type required by the open invoice. Possible registration results are registered, not registered, and lookup failed. Each Production/Test option shows an icon: a green check when registered, an amber warning triangle when not registered, a grey error circle when the lookup failed, a grey minus circle when not checked yet and a clock while checking; hover over it to see the full result. The icons grow with the interface zoom. Editing the invoice keeps the Peppol results as long as the seller and buyer electronic addresses, document type and process stay the same. A missing address, missing or invalid `schemeID`, email address, or non-registrable scheme is explained without sending a lookup.
+Registration and invoice-type support are separate results. A participant can be registered while not publishing the exact document type required by the open invoice. Possible registration results are registered, not registered, and lookup failed. Each Production/Test option shows an icon: a green check when registered, an amber warning triangle when not registered, a grey error circle when the lookup failed, a grey minus circle when not checked yet and a clock while checking; hover over it to see the full result. The icons grow with the interface zoom. The panel keeps the results of the last lookup until you look up again or close it. A missing address, missing or invalid `schemeID`, email address, or non-registrable scheme is explained without sending a lookup.
 
 Peppol lookup requires internet access. It queries Peppol SML/SMP discovery services only when you explicitly run a lookup; opening and validating an invoice do not automatically contact the network. A Peppol result describes discovery metadata at the time of the check and is not a guarantee that a future document transmission will succeed.
 
 ### Look up any Peppol participant
 
-Type the identifier in the Peppol participant field of the top bar (`Ctrl+L` moves there) and press Enter, or use `Menu` > `Peppol lookup`, when the participant is not taken from the open invoice. The lookup opens as a panel on the right half of the window, with its own identifier field and `Look up` button; the invoice (or the Start screen) stays visible and usable on the left, and opening, closing or switching invoices leaves the panel as it is. Drag the panel's left edge to make it wider or narrower; the app remembers the width until you quit. The `Look up seller` and `Look up buyer` links of the Overview open the panel with the identifier filled in, but never start the lookup.
+Type the identifier in the Peppol participant field of the top bar (`Ctrl+L` moves there) and press Enter, or use `Menu` > `Peppol lookup`, when the participant is not taken from the open invoice. The lookup opens as a panel: beside the invoice (or the Start screen) on the right half of the window, or, when the `Invoice` tab is showing, in place of the `Document` card so the `Overview` stays visible. It has its own identifier field and `Look up` button; opening, closing or switching invoices leaves the panel as it is. When the panel sits beside the invoice, drag its left edge to make it wider or narrower; the app remembers the width until you quit. The `Peppol lookup` buttons of the Overview's `Seller` and `Buyer` sections open the panel with that party's identifier filled in and start the lookup at once.
 
 1. Enter an identifier such as `0225:152857363`. The full `iso6523-actorid-upis::0225:152857363` form is also accepted.
 2. Press Enter or `Look up`. Nothing is looked up until you do, and the identifiers you enter are not kept. Results are never cached: `Look up` again queries both networks again, and the line above the results says when they were checked (`Checked 14:02 in Production and Test.`). Close the panel with `Close` at its top right, or `Esc` while you are in it.
 3. Review the separate Production and Test results below the field. The status bar sums them up when the lookup finishes (`Peppol lookup of 0225:152857363 finished: Production registered, Test not registered.`).
-4. Expand the environment details to inspect its SML/SMP source, the collapsed SMP panel with signing certificate details from validated XML signatures, Document Type details, the collapsed Access Point panel with the selected Billing Invoice endpoint URL, lifecycle status, and metadata, and optional Business Card. SMP signing certificates, AP endpoint certificates, and the SMP server TLS certificate are distinct; the TLS peer certificate is not captured.
+4. Expand the environment details to inspect its SML/SMP source, the collapsed SMP signing certificate row with details from validated XML signatures, the Document types list, the Access Point section with the selected Billing Invoice endpoint URL, lifecycle status, and metadata, and optional Business Card. SMP signing certificates, AP endpoint certificates, and the SMP server TLS certificate are distinct; the TLS peer certificate is not captured.
 
 The identifier is checked locally before any request is sent. Each lookup is user initiated, Production and Test stay independent, and a network failure remains distinct from a participant that is not registered.
 
 ## 9. Validate The Invoice
 
-Choose the rule set with the arrow of the `Validate` split button above the tabs. Choosing a rule set validates right away; the button then reads `Validate with <rule set>`:
+Choose the rule set with the arrow of the `Validate` split button above the tabs. Choosing a rule set validates right away; the button then names it (`Validate with <rule set>` to a screen reader):
 
-- `Default`: general Factur-X / EN 16931 validation.
+- `Auto` (called `Default` in the command-line tool): general Factur-X / EN 16931 validation for the detected syntax and profile.
 - `France CTC`: Flux 1 and Flux 10 use the Helger phive rule sets automatically. Flux 1 CII/UBL selects the Base/Démarrage or Full/Cible VESID from BT-24/CustomizationID, while the namespace-less Flux 10 `<Report>` selects the latest bundled `fr.ctc.flux10:report` set (1.1). Other documents first validate the exact detected invoice schema/profile VESID, then run the legacy 1.3.1 and latest bundled France CTC rule sets for CII/UBL EN 16931, CII/UBL Extended, UBL CreditNote, Factur-X, or CDAR. Factur-X BASIC WL, EN 16931, and EXTENDED use the dedicated France CTC Factur-X rule sets. The legacy set is skipped if it is not bundled.
 
-Click `Validate` (or press `F5` / `Ctrl+Enter`). The result appears on the line at the bottom of the invoice (for example `Failed · 13 errors   Default · 14:02`; its tooltip lists what each validation set found); click `Show validation` to open the drawer with the findings. Save checks (the strict save) always use the `Default` rule set, whichever one you chose here.
+Click `Validate` (or press `F5` / `Ctrl+Enter`). The result appears on the line at the bottom of the invoice (for example `Failed · 13 errors   Auto · 14:02`; its tooltip lists what each validation set found); click `Show validation` to open the drawer with the findings. Save checks (the strict save) always use the `Auto` (`Default`) rule set, whichever one you chose here.
 
 For a saved Factur-X PDF, the default validation covers the complete hybrid document: Kaltblut checks the Factur-X/ZUGFeRD BR-HYBRID container and XMP rules, veraPDF checks PDF/A-3 conformance, and DDD/phive check the embedded XML schema and business rules. PDF/A findings include the veraPDF rule and PDF object location. Container and XMP checks also run when `France CTC` is selected, alongside that profile's XML validation route.
 
-Before validation is run, the validation drawer says `Not validated yet`; opening an invoice does not imply that it passed. The detected XML syntax, profile, guideline and VESID are on the `Overview` tab.
+Before validation is run, the validation drawer says `Not validated yet`; opening an invoice does not imply that it passed. The detected XML syntax, profile, guideline and VESID are in the `Format and profile` section of the `Overview` card.
 
 After validation, the drawer's line gives the overall result: `Passed`, `Passed with 2 warnings`, or `Failed · 3 errors`, followed by the rule set and the time of the run. Its tooltip reads `Rule set: <rule set>. Ran <sets>` and lists each validation set that reported findings as passed, passed with warnings, or failed (for example `Invoice profile rules: failed (1 error)`). The validators do not report which rule sets executed, so a set that produced no findings at all is not listed; the tooltip never claims a set ran when it reported nothing. Passed checks and profile-detection messages are not listed as rows.
 
@@ -403,13 +422,13 @@ If the XML editor contains unsaved changes, validation checks the edited XML bec
 
 Open the `XML` tab and click `Visualize`.
 
-The app renders the current XML and opens the `Document` tab on `Rendered from XML`. You can also choose that view yourself in the `Document` tab.
+The app renders the current XML and shows it in the `Document` card of the `Invoice` tab, on `Visualize from XML`. You can also choose that view yourself with the switch in the `Document` card.
 
 Use:
 
 - The arrow buttons (`Previous page` / `Next page`) to move between generated preview pages.
 - The magnifier buttons (`Zoom out` / `Zoom in`) to change the page size.
-- `Render again` to render the XML as it is now, and `Save PDF as...` to export the rendered PDF.
+- `⋯` > `Render again` to render the XML as it is now, and `⋯` > `Save PDF as...` to export the rendered PDF.
 - The scrollbars to move around pages larger than the view.
 
 This preview helps you inspect how the XML invoice content could look as a readable document.
@@ -474,7 +493,7 @@ The source invoice is not overwritten. The suggested filename is prefixed with t
 
 Click `Save changes`.
 
-The app shows the complete source path and lets you either overwrite the opened invoice or use `Save a copy...`. `Enter` in this dialog chooses `Cancel`, not the overwrite. Saving a copy stages the new file before replacing the selected destination, so the original invoice remains unchanged.
+The app asks `Replace the original invoice?`, shows the complete source path on one line (the start is shortened when it is long; hover for the whole path) and lets you either overwrite the opened invoice or use `Save a copy…`. `Enter` in this dialog chooses `Cancel`, not the overwrite. Saving a copy stages the new file before replacing the selected destination, so the original invoice remains unchanged.
 
 Important:
 
@@ -518,7 +537,7 @@ java -version
 Run it from PowerShell so you can see the error:
 
 ```powershell
-java -jar .\peppol-utils-1.7.1.jar
+java -jar .\peppol-utils-1.8.0.jar
 ```
 
 Check that:
@@ -589,7 +608,7 @@ Fix the reported issue, close other apps that may be using the invoice, and try 
 
 ### Peppol lookup fails
 
-Check your internet connection and whether a firewall, proxy, or DNS policy blocks Peppol discovery. A timeout or lookup failure does not mean the participant is unregistered; it means the app could not obtain a reliable result. Click `Refresh` on the Overview, or `Look up` in the lookup panel, to try again.
+Check your internet connection and whether a firewall, proxy, or DNS policy blocks Peppol discovery. A timeout or lookup failure does not mean the participant is unregistered; it means the app could not obtain a reliable result. Click the party's `Peppol lookup` button, or `Look up` in the lookup panel, to try again.
 
 ## 15. Safe Use Recommendation
 
