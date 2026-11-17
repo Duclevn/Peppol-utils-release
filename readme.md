@@ -1,7 +1,8 @@
-# Peppol-utils 1.8.0 End-User Guide
+# Peppol-utils 1.8.1 End-User Guide
 
 ## Table Of Contents
 
+- [What's New In 1.8.1](#whats-new-in-181)
 - [What's New In 1.8.0: The Invoice Tab](#whats-new-in-180-the-invoice-tab)
 - [Also In 1.8.0: Interface Polish](#also-in-180-interface-polish)
 - [Also In 1.7.1](#also-in-171)
@@ -31,6 +32,13 @@
 
 14. [Troubleshooting](#14-troubleshooting)
 15. [Safe Use Recommendation](#15-safe-use-recommendation)
+
+## What's New In 1.8.1
+
+This guide applies to the `peppol-utils-1.8.1.jar` desktop app and the 1.8.1 Windows installer. Version 1.8.1 is a maintenance release.
+
+- Right-click a `.pdf` or `.xml` invoice in Windows and choose `Open with` > `Peppol-utils`: the invoice opens directly instead of the empty start screen.
+- Bundled libraries were updated (see `About Peppol-utils` > `Dependencies`). Validation rules, conversion and saving behave as in 1.8.0.
 
 ## What's New In 1.8.0: The Invoice Tab
 
@@ -223,7 +231,7 @@ launch Peppol-utils from the Start menu or the optional desktop shortcut.
 For the universal JAR, put the jar in a folder you can find, for example
 `Downloads` or `Documents`. Open PowerShell in that folder and run:
 ```powershell
-java -jar .\peppol-utils-1.8.0.jar
+java -jar .\peppol-utils-1.8.1.jar
 ```
 
 ## 4. Open An Invoice
@@ -235,6 +243,8 @@ Until an invoice is open, the window shows `No invoice open` with its own `Open 
    - `.pdf` for a Factur-X PDF invoice
    - `.xml` for a standalone invoice using CII or UBL syntax
 3. Wait for the invoice to load.
+
+You can also right-click a `.pdf` or `.xml` file in Windows, choose `Open with` > `Peppol-utils`, and the invoice opens directly. The same applies to a file passed as the first command-line argument of `Peppol-utils.exe`.
 
 For a PDF invoice, the app shows:
 
@@ -537,7 +547,7 @@ java -version
 Run it from PowerShell so you can see the error:
 
 ```powershell
-java -jar .\peppol-utils-1.8.0.jar
+java -jar .\peppol-utils-1.8.1.jar
 ```
 
 Check that:
