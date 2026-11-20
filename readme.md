@@ -1,4 +1,4 @@
-# Peppol-utils 1.8.2 User Guide
+# Peppol-utils 1.9.0 User Guide
 
 Peppol-utils opens an electronic invoice on your computer. You can read it, edit its XML, validate it, convert it between UBL and CII, save it, and look up the buyer's or seller's Peppol registration.
 
@@ -17,18 +17,18 @@ Click `Open invoice`, choose `File` > `Open...`, or press `Ctrl+O`. In Windows y
 
 Opening an invoice never validates it and never uses the network.
 
-## The Invoice tab
+## The window
 
-![The Invoice tab with the Overview card and the invoice rendered from its XML.](docs/images/invoice-tab.png)
+![The window with the Overview card and the invoice rendered from its XML.](docs/images/invoice-tab.png)
 
-The `Invoice` tab has two cards:
+The row at the top shows your file, its format, `Saved` or `Unsaved`, and the `Convert` and `Validate` buttons. Each file you create with `Convert` is a tab in that row after your file, with a dot while it is unsaved and a `×` to close it. Under the row are two cards, and a third column when the Peppol lookup is open:
 
 - `Overview`: invoice number, type, date, amounts, seller, buyer, and the detected format, profile and validation rules (VESID).
-- `Document`: for a Factur-X PDF, a switch between `Original PDF` and `Visualize from XML`. A standalone XML is always shown rendered from its XML. Use `⋯` for `Render again` and `Save PDF as…`.
+- `Document`: has tabs `Original PDF` (a Factur-X file only), `XML` and `Visualize from XML`. A standalone XML opens on `Visualize from XML`. Use `⋯` for `Render again` and `Save PDF as…`.
 
 ## The XML tab
 
-The `XML` tab holds the invoice XML. Edit it directly, use `Format XML`, search with `Ctrl+F`, or `Copy XML`. Edits stay unsaved until you save (see below), and `Visualize` shows how your edits render.
+The `XML` tab of the Document card holds the invoice XML. Edit it directly, use `Format XML`, search with `Ctrl+F`, or `Copy XML`. Edits stay unsaved until you save (see below), and `Visualize` shows how your edits render.
 
 ## Validate
 
@@ -41,16 +41,16 @@ For a Factur-X PDF, validation also checks the PDF container and PDF/A-3.
 
 The result appears in the validation line at the bottom: `Passed`, `Passed with warnings` or `Failed`, with the rule set and the time. Click it to open the drawer.
 
-![The validation drawer listing findings, with the selected finding's details at the right.](docs/images/validation-drawer.png)
+![The validation drawer listing findings in a table.](docs/images/validation-drawer.png)
 
-- Each finding shows its rule ID, validation set, XML line and message. The chips `All`, errors and warnings filter the list.
-- Select a finding to read its details, then click `Show in XML` to jump to its element. `Technical details` holds the validator's own data.
+- The drawer is a table with one line per finding: its rule ID, message, element and XML line. With several validation sets (for example France CTC) the findings are grouped under one header per set. The chips `All`, errors and warnings filter the list.
+- Select a finding (click it, or use the arrow keys) and the XML tab opens on its line, with a **finding card** under it: the full message, the element, the allowed values when the validator gives them, and `Technical details` (collapsed) for the validator's own data. `F8` and `Shift+F8` go to the next and previous finding, `Enter` moves into the card, and `Esc` closes it. A finding that has no place in the XML opens under its row instead, with a note saying why.
 - `Copy report` and `Copy finding` put the text on the clipboard.
 - After you edit the XML, the result is marked `Out of date` until you validate again.
 
 ### A missing element
 
-When a finding is about a business term that is not in the XML (for example `BT-27 Seller name`), the XML tab shows a **ghost line** where that element belongs: a light red line, outside the text, with the expected start tag and `Missing: BT-27 Seller name · BR-06`. `Show in XML` puts the cursor there. Nothing is added to your XML.
+When a finding is about a business term that is not in the XML (for example `BT-27 Seller name`), the XML tab shows a **ghost line** where that element belongs: a light red line, outside the text, with the expected start tag and `Missing: BT-27 Seller name · BR-06`. Selecting the finding puts its card under that line. Nothing is added to your XML.
 
 ![A ghost line for the missing seller name (BT-27), with the finding in the drawer.](docs/images/missing-element-ghost-line.png)
 
