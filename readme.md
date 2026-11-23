@@ -1,4 +1,4 @@
-# Peppol-utils 1.9.0 User Guide
+# Peppol-utils 1.9.1 User Guide
 
 Peppol-utils opens an electronic invoice on your computer. You can read it, edit its XML, validate it, convert it between UBL and CII, save it, and look up the buyer's or seller's Peppol registration.
 
@@ -24,7 +24,7 @@ Opening an invoice never validates it and never uses the network.
 The row at the top shows your file, its format, `Saved` or `Unsaved`, and the `Convert` and `Validate` buttons. Each file you create with `Convert` is a tab in that row after your file, with a dot while it is unsaved and a `×` to close it. Under the row are two cards, and a third column when the Peppol lookup is open:
 
 - `Overview`: invoice number, type, date, amounts, seller, buyer, and the detected format, profile and validation rules (VESID).
-- `Document`: has tabs `Original PDF` (a Factur-X file only), `XML` and `Visualize from XML`. A standalone XML opens on `Visualize from XML`. Use `⋯` for `Render again` and `Save PDF as…`.
+- `Document`: has tabs `Original PDF` (a Factur-X file only), `XML` and `Visualize from XML`. A standalone XML opens on `Visualize from XML`. The PDF and the rendering show all pages in one column: scroll through them, and the arrows jump to the previous or next page. The zoom (`−`, percentage, `+`) is at the right of the tab row; above 100% the page grows past the card and scrolls sideways. On the `XML` tab the same place holds the text size of the XML. When the card is narrow, the page controls fold into `⋯` (`More page controls` for the PDF; for the rendering it also holds `Render again` and `Save PDF as…`). The toolbar of the `XML` tab folds the same way: Find moves into `⋯`.
 
 ## The XML tab
 
