@@ -1,4 +1,4 @@
-# Peppol-utils 1.9.2 User Guide
+# Peppol-utils 1.9.3 User Guide
 
 Peppol-utils opens an electronic invoice on your computer. You can read it, edit its XML, validate it, convert it between UBL and CII, save it, and look up the buyer's or seller's Peppol registration.
 
@@ -24,7 +24,7 @@ Opening an invoice never validates it and never uses the network.
 The row at the top shows your file, its format, `Saved` or `Unsaved`, and the `Convert` and `Validate` buttons. Each file you create with `Convert` is a tab in that row after your file, with a dot while it is unsaved and a `×` to close it. Under the row are two cards, and a third column when the Peppol lookup is open:
 
 - `Overview`: invoice number, type, date, amounts, seller, buyer, and the detected format, profile and validation rules (VESID).
-- `Document`: has tabs `Original PDF` (a Factur-X file only), `XML` and `Visualize from XML`. A standalone XML opens on `Visualize from XML`. The PDF and the rendering show all pages in one column: scroll through them, and the arrows jump to the previous or next page. The zoom (`−`, percentage, `+`) is at the right of the tab row; above 100% the page grows past the card and scrolls sideways. On the `XML` tab the same place holds the text size of the XML. When the card is narrow, the page controls fold into `⋯` (`More page controls` for the PDF; for the rendering it also holds `Render again` and `Save PDF as…`). The toolbar of the `XML` tab folds the same way: Find moves into `⋯`.
+- `Document`: has tabs `Original PDF` (a Factur-X file only), `XML` and `Visualize from XML`. A standalone XML opens on `Visualize from XML`. The PDF and the rendering show all pages in one column: scroll through them, and the arrows jump to the previous or next page. The zoom (`−`, percentage, `+`) is at the right of the tab row; above 100% the page grows past the card and scrolls sideways. On the `XML` tab the same row holds `Format XML`, `Copy XML`, Find and the text size of the XML. When the card is narrow, the page controls fold into `⋯` (`More page controls` for the PDF; for the rendering it also holds `Render again` and `Save PDF as…`). The `XML` tab's controls fold the same way into `More XML tools`: Find first, then the text size.
 
 ## The XML tab
 
@@ -39,18 +39,18 @@ Click `Validate`, or press `F5`. Its arrow picks the rule set:
 
 For a Factur-X PDF, validation also checks the PDF container and PDF/A-3.
 
-The result appears in the validation line at the bottom: `Passed`, `Passed with warnings` or `Failed`, with the rule set and the time. Click it to open the drawer.
+The result appears in the validation line at the bottom: `Passed`, `Passed with warnings` or `Failed`, with the rule set and the time. Click it to open the drawer. It opens just tall enough for its findings, up to a few lines; drag its top edge to make it taller, and it keeps that height.
 
 ![The validation drawer listing findings in a table.](docs/images/validation-drawer.png)
 
 - The drawer is a table with one line per finding: its rule ID, message, element and XML line. With several validation sets (for example France CTC) the findings are grouped under one header per set. The chips `All`, errors and warnings filter the list.
-- Select a finding (click it, or use the arrow keys) and the XML tab opens on its line, with a **finding card** under it: the full message, the element, the allowed values when the validator gives them, and `Technical details` (collapsed) for the validator's own data. `F8` and `Shift+F8` go to the next and previous finding, `Enter` moves into the card, and `Esc` closes it. A finding that has no place in the XML opens under its row instead, with a note saying why.
+- Select a finding (click it, or use the arrow keys) and the XML tab opens on its line, with a **finding card** under it, light red for an error and light yellow for a warning: the full message, the element, the allowed values when the validator gives them, and `Technical details` (collapsed) for the validator's own data. `F8` and `Shift+F8` go to the next and previous finding, `Enter` moves into the card, and `Esc` closes it. A finding that has no place in the XML opens under its row instead, with a note saying why.
 - `Copy report` and `Copy finding` put the text on the clipboard.
 - After you edit the XML, the result is marked `Out of date` until you validate again.
 
 ### A missing element
 
-When a finding is about a business term that is not in the XML (for example `BT-27 Seller name`), the XML tab shows a **ghost line** where that element belongs: a light red line, outside the text, with the expected start tag and `Missing: BT-27 Seller name · BR-06`. Selecting the finding puts its card under that line. Nothing is added to your XML.
+When a finding is about a business term that is not in the XML (for example `BT-27 Seller name`), the XML tab shows a **ghost line** where that element belongs: a line outside the text with the expected start tag and `Missing: BT-27 Seller name · BR-06`. It is light red for an error and light yellow when only warnings point there; the `Missing` tag in the drawer and on the card takes the same colour. Selecting the finding puts its card under that line. Nothing is added to your XML.
 
 ![A ghost line for the missing seller name (BT-27), with the finding in the drawer.](docs/images/missing-element-ghost-line.png)
 
