@@ -1,4 +1,4 @@
-# Peppol-utils 1.9.1 User Guide
+# Peppol-utils 1.9.2 User Guide
 
 Peppol-utils opens an electronic invoice on your computer. You can read it, edit its XML, validate it, convert it between UBL and CII, save it, and look up the buyer's or seller's Peppol registration.
 
