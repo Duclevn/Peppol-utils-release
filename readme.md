@@ -1,4 +1,4 @@
-# Peppol-utils 1.9.3 User Guide
+# Peppol-utils 1.9.4 User Guide
 
 Peppol-utils opens an electronic invoice on your computer. You can read it, edit its XML, validate it, convert it between UBL and CII, save it, and look up the buyer's or seller's Peppol registration.
 
@@ -24,18 +24,20 @@ Opening an invoice never validates it and never uses the network.
 The row at the top shows your file, its format, `Saved` or `Unsaved`, and the `Convert` and `Validate` buttons. Each file you create with `Convert` is a tab in that row after your file, with a dot while it is unsaved and a `×` to close it. Under the row are two cards, and a third column when the Peppol lookup is open:
 
 - `Overview`: invoice number, type, date, amounts, seller, buyer, and the detected format, profile and validation rules (VESID).
-- `Document`: has tabs `Original PDF` (a Factur-X file only), `XML` and `Visualize from XML`. A standalone XML opens on `Visualize from XML`. The PDF and the rendering show all pages in one column: scroll through them, and the arrows jump to the previous or next page. The zoom (`−`, percentage, `+`) is at the right of the tab row; above 100% the page grows past the card and scrolls sideways. On the `XML` tab the same row holds `Format XML`, `Copy XML`, Find and the text size of the XML. When the card is narrow, the page controls fold into `⋯` (`More page controls` for the PDF; for the rendering it also holds `Render again` and `Save PDF as…`). The `XML` tab's controls fold the same way into `More XML tools`: Find first, then the text size.
+- `Document`: has tabs `Original PDF` (a Factur-X file only), `XML` and `Visualize from XML`. A standalone XML opens on `Visualize from XML`. The PDF and the rendering show all pages in one column: scroll through them, and the arrows jump to the previous or next page. The zoom (`−`, percentage, `+`) is at the right of the tab row; above 100% the page grows past the card and scrolls sideways. On the `XML` tab the same row holds `Pretty print`, `Copy` (the whole XML), Find and the text size of the XML. When the card is narrow, the page controls fold into `⋯` (`More page controls` for the PDF; for the rendering it also holds `Render again` and `Save PDF as…`). The `XML` tab's controls fold the same way into `More XML tools`: Find first, then the text size.
 
 ## The XML tab
 
-The `XML` tab of the Document card holds the invoice XML. Edit it directly, use `Format XML`, search with `Ctrl+F`, or `Copy XML`. Edits stay unsaved until you save (see below), and `Visualize` shows how your edits render.
+`Visualize from XML` draws the invoice from its XML as a readable PDF: header, seller and buyer, invoice lines, VAT breakdown, totals and payment details (with a payment QR code when the XML has a bank account). Labels and country names are in English, and dates read like `19 Aug 2025`. Characters outside the Latin, Greek and Cyrillic scripts, such as Japanese or Arabic, show as `?` in the rendering; the XML itself is unchanged.
+
+The `XML` tab of the Document card holds the invoice XML. Edit it directly, indent it with `Pretty print`, search with `Ctrl+F`, or copy it all with `Copy`. Edits stay unsaved until you save (see below), and `Visualize` shows how your edits render.
 
 ## Validate
 
 Click `Validate`, or press `F5`. Its arrow picks the rule set:
 
-- `Auto`: the rules for the detected syntax and profile.
-- `France CTC`: also checks the France CTC rule sets, and Flux 1 and Flux 10 documents.
+- `Auto`: the rules that the invoice declares for its syntax and profile, for example EN 16931, Factur-X, XRechnung or Peppol BIS. France PPF Flux 1 and Flux 10 documents are checked here too.
+- `France CTC`: the `Auto` rules plus the latest France CTC rule set.
 
 For a Factur-X PDF, validation also checks the PDF container and PDF/A-3.
 
@@ -59,11 +61,8 @@ When a finding is about a business term that is not in the XML (for example `BT-
 The `Convert` menu works on the current XML, including unsaved edits. Each result opens in its own tab; your invoice is not changed.
 
 - `UBL to CII` and `CII to UBL` change the syntax.
-- `France CTC Flow 1` generates Flux 1 XML in `Base` or `Full` form. For an ordinary invoice, choose its billing framework (BT-23); the app does not guess it.
 
-An item that cannot run for the open XML is greyed out and says why. In a result tab, use `Format XML`, `Save as...` or `Close tab`.
-
-![A UBL invoice converted to CII and to France CTC Flow 1 Full, each in its own tab.](docs/images/convert-flow1.png)
+An item that cannot run for the open XML is greyed out and says why. In a result tab, use `Pretty print`, `Save as...` or `Close tab`.
 
 ## Save
 
