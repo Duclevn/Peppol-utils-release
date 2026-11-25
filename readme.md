@@ -1,4 +1,4 @@
-# Peppol-utils 1.9.6 User Guide
+# Peppol-utils 1.9.7 User Guide
 
 Peppol-utils opens an electronic invoice on your computer. You can read it, edit its XML, validate it, convert it between UBL and CII, save it, and look up the buyer's or seller's Peppol registration.
 
@@ -97,7 +97,7 @@ Check whether a participant is registered on the Peppol network.
 
 ![The Peppol lookup panel showing a participant registered in Test, with its document types.](docs/images/peppol-lookup.png)
 
-A result says what was published, not that delivery works. A lookup that fails (no internet, a firewall) is not the same as an unregistered participant: try again. Every lookup queries the network again; nothing is cached.
+A result says what was published, not that delivery works. A lookup that fails (no internet, a firewall) is not the same as an unregistered participant: try again. Every lookup queries the network again; nothing is cached. A firewall that blocks the plain HTTP downloads of certificate revocation lists (see Privacy) can also make a lookup fail.
 
 ## Peppol code lists
 
@@ -110,7 +110,9 @@ A result says what was published, not that delivery works. A lookup that fails (
 
 ## Privacy
 
-Invoices are processed on your computer only. The app uses the network only when you start a Peppol lookup, and nothing from the open invoice is sent. The app has no other online feature.
+Invoices are processed on your computer only. The app uses the network only when you start a Peppol lookup. A lookup sends the participant identifier, to look it up: the one you type, or the electronic address of the seller or buyer when you use the `Peppol lookup` button of a party. Nothing else from the open invoice is sent. The app has no other online feature.
+
+To check that the certificates of a participant's SMP have not been revoked, a lookup also downloads the certificate revocation lists that those certificates name, for example from `c.pki.goog`. Certificate authorities publish these signed lists over plain HTTP (port 80) because an HTTPS download would itself need a revocation check, so the app cannot use HTTPS for them. The requests hold no invoice data, but the authority's server sees your IP address and the time of the lookup. If your firewall blocks port 80 to that host, the lookup can fail.
 
 ## Shortcuts
 
