@@ -1,4 +1,4 @@
-# Peppol-utils 1.9.4 User Guide
+# Peppol-utils 1.9.5 User Guide
 
 Peppol-utils opens an electronic invoice on your computer. You can read it, edit its XML, validate it, convert it between UBL and CII, save it, and look up the buyer's or seller's Peppol registration.
 
@@ -30,7 +30,7 @@ The row at the top shows your file, its format, `Saved` or `Unsaved`, and the `C
 
 `Visualize from XML` draws the invoice from its XML as a readable PDF: header, seller and buyer, invoice lines, VAT breakdown, totals and payment details (with a payment QR code when the XML has a bank account). Labels and country names are in English, and dates read like `19 Aug 2025`. Characters outside the Latin, Greek and Cyrillic scripts, such as Japanese or Arabic, show as `?` in the rendering; the XML itself is unchanged.
 
-The `XML` tab of the Document card holds the invoice XML. Edit it directly, indent it with `Pretty print`, search with `Ctrl+F`, or copy it all with `Copy`. Edits stay unsaved until you save (see below), and `Visualize` shows how your edits render.
+The `XML` tab of the Document card holds the invoice XML. Edit it directly, indent it with `Pretty print`, search with `Ctrl+F`, or copy it all with `Copy`. Edits stay unsaved until you save (see below), and `Visualize from XML` shows how your edits render.
 
 ## Validate
 
@@ -41,7 +41,9 @@ Click `Validate`, or press `F5`. Its arrow picks the rule set:
 
 For a Factur-X PDF, validation also checks the PDF container and PDF/A-3.
 
-The result appears in the validation line at the bottom: `Passed`, `Passed with warnings` or `Failed`, with the rule set and the time. Click it to open the drawer. It opens just tall enough for its findings, up to a few lines; drag its top edge to make it taller, and it keeps that height.
+The result appears in the validation line at the bottom: `Passed`, `Passed with warnings` or `Failed`, with the rule set and the time. The drawer opens by itself, just tall enough for its findings, up to five lines; click the line to close or open it again. Drag its top edge (it turns blue under the mouse), or the empty middle of its header, to make it taller or shorter, and it keeps that height.
+
+`Auto` runs the latest rules for the invoice's syntax and profile. After a run, the drawer's blue `Select version` list names the rules that ran, for example `EN 16931 CII 1.3.17 (latest)`. If your receiver's Peppol access point has not installed the newest rules yet, choose its version in that list: the invoice is validated again with it and the list turns yellow. Later runs of that invoice keep that version until you choose the latest again. Only versions included in the app are listed (every Peppol BIS and XRechnung version; older Factur-X and France CTC versions are left out). Changing the rule set or opening another invoice goes back to the newest.
 
 ![The validation drawer listing findings in a table.](docs/images/validation-drawer.png)
 
@@ -62,7 +64,7 @@ The `Convert` menu works on the current XML, including unsaved edits. Each resul
 
 - `UBL to CII` and `CII to UBL` change the syntax.
 
-An item that cannot run for the open XML is greyed out and says why. In a result tab, use `Pretty print`, `Save as...` or `Close tab`.
+An item that cannot run for the open XML is greyed out and says why. In a result tab, use `Pretty print`, `Save as...` or `Close tab`. `Save as...` never writes over your invoice or another file open in the app.
 
 ## Save
 
@@ -76,16 +78,35 @@ Saving is strict:
 
 If only the PDF's Factur-X container is invalid, open the drawer and choose `⋯` > `Repair PDF container…`. It writes a separate `-repaired.pdf`.
 
+## Save an anonymized copy
+
+To share an invoice without its personal or commercial data, for example in a bug report, choose `Tools` > `Save anonymized copy…` and pick where to save it.
+
+- Names, addresses, contacts, identifiers, bank accounts, document numbers, references and notes are replaced by `ANONYMIZED` values. Amounts, tax rates, currencies, countries, dates, quantities, item names and the profile stay, so the copy validates like the original.
+- An XML invoice (CII or UBL) is saved as XML. A Factur-X PDF is saved as a new Factur-X PDF whose page is drawn from the anonymized XML; the original pages are not kept, because they show the real names. Choose `XML invoice (*.xml)` in the save dialog to save only the anonymized XML.
+- The copy never replaces the open invoice. If any original name, address or identifier would remain, no copy is made.
+
+Look through the copy before you send it: text the rules keep, such as item names, is not replaced, so a name written there stays.
+
 ## Peppol lookup
 
 Check whether a participant is registered on the Peppol network.
 
 - Click `Peppol lookup` beside the Seller or Buyer in the `Overview` card, or type a participant ID such as `0225:123456789` in the top bar's lookup field (`Ctrl+L`).
-- The panel checks Production and Test separately and shows the invoice document types the participant publishes and their endpoints, plus the Business Card when there is one.
+- The panel checks Production and Test separately (each card says `Registered` or `Not registered`) and shows the invoice document types the participant publishes and their endpoints, plus the Business Card when there is one.
 
 ![The Peppol lookup panel showing a participant registered in Test, with its document types.](docs/images/peppol-lookup.png)
 
 A result says what was published, not that delivery works. A lookup that fails (no internet, a firewall) is not the same as an unregistered participant: try again. Every lookup queries the network again; nothing is cached.
+
+## Peppol code lists
+
+`Tools` > `Peppol code lists` opens the OpenPeppol code lists v9.7, which come with the app and need no internet: document types, participant identifier schemes (for example `0009` SIRET or `0208` Belgian KBO), processes, transport profiles and SPIS use cases.
+
+- Type in the search box to filter the list; every word must match. The lists next to it filter by state (`Active`, `Deprecated`, `Removed`) and, depending on the list, by category, community, country or scheme.
+- Select a row to see all its details. `Copy` (or `Ctrl+C` in the table) copies the code. A document type links to its processes, and a process to the document types that use it.
+- `Deprecated` means: do not use it for new documents; it is still accepted until it is removed.
+- `Esc` clears the search; press it again, or click `Close`, to go back to your invoice.
 
 ## Privacy
 
@@ -110,4 +131,4 @@ Invoices are processed on your computer only. The app uses the network only when
 
 ## Report a problem
 
-Open an issue at [github.com/Duclevn/Peppol-utils-release/issues](https://github.com/Duclevn/Peppol-utils-release/issues) with your version (`File` > `About Peppol-utils`), what you did and what you saw. Do not attach real customer invoices; use an anonymized copy.
+Open an issue at [github.com/Duclevn/Peppol-utils-release/issues](https://github.com/Duclevn/Peppol-utils-release/issues) with your version (`About` > `About Peppol-utils`), what you did and what you saw. Do not attach real customer invoices; use an anonymized copy (`Tools` > `Save anonymized copy…`).
