@@ -1,4 +1,4 @@
-# Peppol-utils 1.9.8 User Guide
+# Peppol-utils 1.9.9 User Guide
 
 Peppol-utils opens an electronic invoice on your computer. You can read it, edit its XML, validate it, convert it between UBL and CII, save it, and look up the buyer's or seller's Peppol registration.
 
@@ -19,18 +19,20 @@ Opening an invoice never validates it and never uses the network.
 
 ## The window
 
+Choose **Tools > Appearance > Dark** or **Light**. Light is the default. The sun or moon button at the right end of the top bar does the same: in Dark it shows a sun and switches to Light, in Light it shows a moon and switches to Dark. The window changes immediately and remembers your choice the next time you open Peppol-utils. PDF pages and **Visualize from XML** keep their white paper. Windows High Contrast takes precedence while it is on and your chosen appearance returns when you turn it off.
+
 ![The window with the Overview card and the invoice rendered from its XML.](docs/images/invoice-tab.png)
 
 The row at the top shows your file, its format, `Saved` or `Unsaved`, and the `Convert` and `Validate` buttons. Each file you create with `Convert` is a tab in that row after your file, with a dot while it is unsaved and a `×` to close it. Under the row are two cards, and a third column when the Peppol lookup is open:
 
 - `Overview`: invoice number, type, date, amounts, seller, buyer, and the detected format, profile and validation rules (VESID).
-- `Document`: has tabs `Original PDF` (a Factur-X file only), `XML` and `Visualize from XML`. A standalone XML opens on `Visualize from XML`. The PDF and the rendering show all pages in one column: scroll through them, and the arrows jump to the previous or next page. The zoom (`−`, percentage, `+`) is at the right of the tab row; above 100% the page grows past the card and scrolls sideways. On the `XML` tab the same row holds `Pretty print`, `Copy` (the whole XML), Find and the text size of the XML. When the card is narrow, the page controls fold into `⋯` (`More page controls` for the PDF; for the rendering it also holds `Render again` and `Save PDF as…`). The `XML` tab's controls fold the same way into `More XML tools`: Find first, then the text size.
+- `Document`: has tabs `Original PDF` (a Factur-X file only), `XML` and `Visualize from XML`. A standalone XML opens on `Visualize from XML`. The PDF and the rendering show all pages in one column: scroll through them, and the arrows jump to the previous or next page. The zoom (`−`, percentage, `+`) is at the right of the tab row; above 100% the page grows past the card and scrolls sideways. On the `XML` tab the same row holds `Pretty print`, `Copy` (the whole XML), Find and the text size of the XML. When the card is narrow, the page controls fold into `⋯` (`More page controls` for the PDF; for the rendering it also holds `Render again` and `Save PDF as…`). The `XML` tab's controls fold the same way into `More XML tools`: Find and Replace first, then the text size.
 
 ## The XML tab
 
 `Visualize from XML` draws the invoice from its XML as a readable PDF: header, seller and buyer, invoice lines, VAT breakdown, totals and payment details (with a payment QR code when the XML has a bank account). Labels and country names are in English, and dates read like `19 Aug 2025`. Characters outside the Latin, Greek and Cyrillic scripts, such as Japanese or Arabic, show as `?` in the rendering; the XML itself is unchanged.
 
-The `XML` tab of the Document card holds the invoice XML. Edit it directly, indent it with `Pretty print`, search with `Ctrl+F`, or copy it all with `Copy`. Edits stay unsaved until you save (see below), and `Visualize from XML` shows how your edits render.
+The `XML` tab of the Document card holds the invoice XML. Edit it directly, indent it with `Pretty print`, search with `Ctrl+F`, or copy it all with `Copy`. `Ctrl+H`, or the arrow to the left of the search field, adds a `Replace` field: `Replace` changes the selected match and moves to the next one (the first press only selects the next match), and `Replace all` changes every match at once, so one `Ctrl+Z` undoes it. Searching ignores upper and lower case, and the replacement is put in exactly as typed. The Replace controls are off while the XML cannot be edited. Edits stay unsaved until you save (see below), and `Visualize from XML` shows how your edits render.
 
 ## Validate
 
@@ -50,7 +52,7 @@ The result appears in the validation line at the bottom: `Passed`, `Passed with 
 - The drawer is a table with one line per finding: its rule ID, message, element and XML line. With several validation sets (for example France CTC) the findings are grouped under one header per set. The chips `All`, errors and warnings filter the list.
 - Select a finding (click it, or use the arrow keys) and the XML tab opens on its line, with a **finding card** under it, marked by a red bar on its left for an error and a yellow one for a warning: the full message, the element, the allowed values when the validator gives them, and `Technical details` (collapsed) for the validator's own data. `F8` and `Shift+F8` go to the next and previous finding, `Enter` moves into the card, and `Esc` closes it. A finding that has no place in the XML opens under its row instead, with a note saying why.
 - `Copy report` and `Copy finding` put the text on the clipboard.
-- After you edit the XML, the result is marked `Out of date` until you validate again.
+- After you edit the XML, the result is marked `Out of date` until you validate again. After you save, the drawer shows the result of the save's own check (the `Auto` rules, run on the XML that was written), and its findings still lead to their lines.
 
 ### A missing element
 
@@ -68,7 +70,7 @@ An item that cannot run for the open XML is greyed out and says why. In a result
 
 ## Save
 
-Click `Save changes`, or press `Ctrl+S`. The app asks `Replace the original invoice?`; choose to replace it or `Save a copy`. It makes no backup, so keep your own copy of important invoices.
+Click `Save changes`, or press `Ctrl+S`. The app asks `Replace the original invoice?`; choose `Save changes` to replace it, or `Cancel`. To keep the original and write a copy, use `File > Save as…` instead. Saving makes no backup, so keep your own copy of important invoices.
 
 Saving is strict:
 
@@ -120,7 +122,7 @@ To check that the certificates of a participant's SMP have not been revoked, a l
 | --- | --- |
 | `Ctrl+O` / `Ctrl+S` | Open / save |
 | `F5` or `Ctrl+Enter` | Validate |
-| `Ctrl+F` | Search the XML |
+| `Ctrl+F` / `Ctrl+H` | Search / search and replace in the XML |
 | `Ctrl+L` | Peppol lookup field |
 | `Ctrl+=` / `Ctrl+-` / `Ctrl+0` | Larger / smaller / normal interface |
 | `Esc` | Cancel the running operation |
