@@ -48,7 +48,7 @@ The result appears in the validation line at the bottom: `Passed`, `Passed with 
 ![The validation drawer listing findings in a table.](docs/images/validation-drawer.png)
 
 - The drawer is a table with one line per finding: its rule ID, message, element and XML line. With several validation sets (for example France CTC) the findings are grouped under one header per set. The chips `All`, errors and warnings filter the list.
-- Select a finding (click it, or use the arrow keys) and the XML tab opens on its line, with a **finding card** under it, light red for an error and light yellow for a warning: the full message, the element, the allowed values when the validator gives them, and `Technical details` (collapsed) for the validator's own data. `F8` and `Shift+F8` go to the next and previous finding, `Enter` moves into the card, and `Esc` closes it. A finding that has no place in the XML opens under its row instead, with a note saying why.
+- Select a finding (click it, or use the arrow keys) and the XML tab opens on its line, with a **finding card** under it, marked by a red bar on its left for an error and a yellow one for a warning: the full message, the element, the allowed values when the validator gives them, and `Technical details` (collapsed) for the validator's own data. `F8` and `Shift+F8` go to the next and previous finding, `Enter` moves into the card, and `Esc` closes it. A finding that has no place in the XML opens under its row instead, with a note saying why.
 - `Copy report` and `Copy finding` put the text on the clipboard.
 - After you edit the XML, the result is marked `Out of date` until you validate again.
 
