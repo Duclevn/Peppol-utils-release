@@ -1,4 +1,4 @@
-# Peppol-utils 1.9.7 User Guide
+# Peppol-utils 1.9.8 User Guide
 
 Peppol-utils opens an electronic invoice on your computer. You can read it, edit its XML, validate it, convert it between UBL and CII, save it, and look up the buyer's or seller's Peppol registration.
 
@@ -68,7 +68,7 @@ An item that cannot run for the open XML is greyed out and says why. In a result
 
 ## Save
 
-Click `Save changes`, or press `Ctrl+S`. The app asks `Replace the original invoice?`; choose to replace it or `Save a copy…`. It makes no backup, so keep your own copy of important invoices.
+Click `Save changes`, or press `Ctrl+S`. The app asks `Replace the original invoice?`; choose to replace it or `Save a copy`. It makes no backup, so keep your own copy of important invoices.
 
 Saving is strict:
 
